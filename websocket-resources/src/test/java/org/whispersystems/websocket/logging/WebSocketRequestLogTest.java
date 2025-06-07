@@ -31,7 +31,8 @@ import org.whispersystems.websocket.session.WebSocketSessionContext;
 
 public class WebSocketRequestLogTest {
 
-  private final static Locale ORIGINAL_DEFAULT_LOCALE = Locale.getDefault();
+  private static final Locale ORIGINAL_DEFAULT_LOCALE = Locale.getDefault();
+  private static final String NEWLINE = System.getProperty("line.separator");
 
   @BeforeEach
   void beforeEachTest() {
@@ -60,11 +61,11 @@ public class WebSocketRequestLogTest {
     requestLog.log("123.456.789.123", request, response);
 
     listAppender.waitForListSize(1);
-    assertThat(listAppender.list.size()).isEqualTo(1);
+    assertThat(listAppender.list).hasSize(1);
 
     String loggedLine = new String(listAppender.outputStream.toByteArray());
     assertThat(loggedLine).matches(
-        "123\\.456\\.789\\.123 \\- \\- \\[[0-9]{2}\\/[a-zA-Z]{3}\\/[0-9]{4}:[0-9]{2}:[0-9]{2}:[0-9]{2} (\\-|\\+)[0-9]{4}\\] \"GET \\/v1\\/test WS\" 200 \\- \"\\-\" \"\\-\"\n");
+        "123\\.456\\.789\\.123 \\- \\- \\[[0-9]{2}\\/[a-zA-Z]{3}\\/[0-9]{4}:[0-9]{2}:[0-9]{2}:[0-9]{2} (\\-|\\+)[0-9]{4}\\] \"GET \\/v1\\/test WS\" 200 \\- \"\\-\" \"\\-\"" + NEWLINE);
   }
 
   @Test
@@ -86,11 +87,11 @@ public class WebSocketRequestLogTest {
     requestLog.log("123.456.789.123", request, response);
 
     listAppender.waitForListSize(1);
-    assertThat(listAppender.list.size()).isEqualTo(1);
+    assertThat(listAppender.list).hasSize(1);
 
     String loggedLine = new String(listAppender.outputStream.toByteArray());
     assertThat(loggedLine).matches(
-        "123\\.456\\.789\\.123 \\- \\- \\[[0-9]{2}\\/[a-zA-Z]{3}\\/[0-9]{4}:[0-9]{2}:[0-9]{2}:[0-9]{2} (\\-|\\+)[0-9]{4}\\] \"GET \\/v1\\/test WS\" 200 \\- \"https://moxie.org\" \"SmertZeSmert\"\n");
+        "123\\.456\\.789\\.123 \\- \\- \\[[0-9]{2}\\/[a-zA-Z]{3}\\/[0-9]{4}:[0-9]{2}:[0-9]{2}:[0-9]{2} (\\-|\\+)[0-9]{4}\\] \"GET \\/v1\\/test WS\" 200 \\- \"https://moxie.org\" \"SmertZeSmert\"" + NEWLINE);
 
     System.out.println(listAppender.list.get(0));
     System.out.println(new String(listAppender.outputStream.toByteArray()));
@@ -117,6 +118,7 @@ public class WebSocketRequestLogTest {
     public final List<E> list = new ArrayList<E>();
     public final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+    @Override
     protected void append(E e) {
       super.append(e);
 
