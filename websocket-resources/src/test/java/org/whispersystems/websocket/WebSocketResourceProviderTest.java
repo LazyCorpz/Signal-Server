@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -166,10 +165,10 @@ class WebSocketResourceProviderTest {
     ContainerRequest bundledRequest = requestCaptor.getValue();
 
     assertThat(bundledRequest.getRequest().getMethod()).isEqualTo("GET");
-    assertThat(bundledRequest.getBaseUri().toString()).isEqualTo("/");
+    assertThat(bundledRequest.getBaseUri()).hasToString("/");
     assertThat(bundledRequest.getPath(false)).isEqualTo("bar");
 
-    verify(requestLog).log(eq("127.0.0.1"), eq(bundledRequest), eq(response));
+    verify(requestLog).log("127.0.0.1", bundledRequest, response);
     verify(remoteEndpoint).sendBytes(responseCaptor.capture(), any(WriteCallback.class));
 
     SubProtocol.WebSocketMessage responseMessageContainer = SubProtocol.WebSocketMessage.parseFrom(
@@ -217,7 +216,7 @@ class WebSocketResourceProviderTest {
     ContainerRequest bundledRequest = requestCaptor.getValue();
 
     assertThat(bundledRequest.getRequest().getMethod()).isEqualTo("GET");
-    assertThat(bundledRequest.getBaseUri().toString()).isEqualTo("/");
+    assertThat(bundledRequest.getBaseUri()).hasToString("/");
     assertThat(bundledRequest.getPath(false)).isEqualTo("bar");
 
     ArgumentCaptor<ByteBuffer> responseCaptor = ArgumentCaptor.forClass(ByteBuffer.class);
