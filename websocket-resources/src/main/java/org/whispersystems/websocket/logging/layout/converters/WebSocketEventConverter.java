@@ -8,14 +8,13 @@ import org.whispersystems.websocket.logging.WebsocketEvent;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.DynamicConverter;
-import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.Status;
 
-public abstract class WebSocketEventConverter extends DynamicConverter<WebsocketEvent> implements  ContextAware {
+public abstract class WebSocketEventConverter extends DynamicConverter<WebsocketEvent> {
 
-    public final static char SPACE_CHAR = ' ';
-    public final static char QUESTION_CHAR = '?';
+    public static final char SPACE_CHAR = ' ';
+    public static final char QUESTION_CHAR = '?';
 
     ContextAwareBase cab = new ContextAwareBase();
 

@@ -51,8 +51,9 @@ public interface PrincipalSupplier<T> {
   /**
    * @return A principal supplier that can be used if the principal type does not support modification.
    */
+  @SuppressWarnings("unchecked")
   static <T> PrincipalSupplier<T> forImmutablePrincipal() {
     //noinspection unchecked
-    return (PrincipalSupplier<T>) ImmutablePrincipalSupplier.INSTANCE;
+    return ImmutablePrincipalSupplier.INSTANCE;
   }
 }

@@ -8,7 +8,6 @@ package org.signal.integration;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.signal.integration.config.Config;
 import org.whispersystems.textsecuregcm.metrics.NoopAwsSdkMetricPublisher;

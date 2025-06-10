@@ -15,7 +15,7 @@ public class RequestHeaderConverter extends WebSocketEventConverter {
   @Override
   public void start() {
     key = getFirstOption();
-    if (OptionHelper.isEmpty(key)) {
+    if (OptionHelper.isNullOrEmptyOrAllSpaces(key)) {
       addWarn("Missing key for the requested header. Defaulting to all keys.");
       key = null;
     }

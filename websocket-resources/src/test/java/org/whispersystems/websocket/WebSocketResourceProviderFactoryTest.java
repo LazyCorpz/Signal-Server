@@ -7,7 +7,6 @@ package org.whispersystems.websocket;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -42,6 +41,7 @@ public class WebSocketResourceProviderFactoryTest {
   private JettyServerUpgradeRequest request;
   private JettyServerUpgradeResponse response;
 
+  @SuppressWarnings("unchecked")
   @BeforeEach
   void setup() {
     jerseyEnvironment = new DropwizardResourceConfig();
@@ -57,7 +57,7 @@ public class WebSocketResourceProviderFactoryTest {
   @Test
   void testUnauthorized() throws AuthenticationException, IOException {
     when(environment.getAuthenticator()).thenReturn(authenticator);
-    when(authenticator.authenticate(eq(request))).thenReturn(ReusableAuth.invalid());
+    when(authenticator.authenticate(request)).thenReturn(ReusableAuth.invalid());
     when(environment.jersey()).thenReturn(jerseyEnvironment);
 
     WebSocketResourceProviderFactory<?> factory = new WebSocketResourceProviderFactory<>(environment, Account.class,
@@ -65,8 +65,8 @@ public class WebSocketResourceProviderFactoryTest {
     Object connection = factory.createWebSocket(request, response);
 
     assertNull(connection);
-    verify(response).sendForbidden(eq("Unauthorized"));
-    verify(authenticator).authenticate(eq(request));
+    verify(response).sendForbidden("Unauthorized");
+    verify(authenticator).authenticate(request);
   }
 
   @Test
@@ -74,7 +74,7 @@ public class WebSocketResourceProviderFactoryTest {
     Account account = new Account();
 
     when(environment.getAuthenticator()).thenReturn(authenticator);
-    when(authenticator.authenticate(eq(request)))
+    when(authenticator.authenticate(request))
         .thenReturn(ReusableAuth.authenticated(account, PrincipalSupplier.forImmutablePrincipal()));
     when(environment.jersey()).thenReturn(jerseyEnvironment);
     final HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
@@ -87,7 +87,7 @@ public class WebSocketResourceProviderFactoryTest {
 
     assertNotNull(connection);
     verifyNoMoreInteractions(response);
-    verify(authenticator).authenticate(eq(request));
+    verify(authenticator).authenticate(request);
 
     ((WebSocketResourceProvider<?>) connection).onWebSocketConnect(mock(Session.class));
 
@@ -98,7 +98,7 @@ public class WebSocketResourceProviderFactoryTest {
   @Test
   void testErrorAuthorization() throws AuthenticationException, IOException {
     when(environment.getAuthenticator()).thenReturn(authenticator);
-    when(authenticator.authenticate(eq(request))).thenThrow(new AuthenticationException("database failure"));
+    when(authenticator.authenticate(request)).thenThrow(new AuthenticationException("database failure"));
     when(environment.jersey()).thenReturn(jerseyEnvironment);
 
     WebSocketResourceProviderFactory<Account> factory = new WebSocketResourceProviderFactory<>(environment,
@@ -108,8 +108,8 @@ public class WebSocketResourceProviderFactoryTest {
     Object connection = factory.createWebSocket(request, response);
 
     assertNull(connection);
-    verify(response).sendError(eq(500), eq("Failure"));
-    verify(authenticator).authenticate(eq(request));
+    verify(response).sendError(500, "Failure");
+    verify(authenticator).authenticate(request);
   }
 
   @Test
@@ -123,7 +123,7 @@ public class WebSocketResourceProviderFactoryTest {
         REMOTE_ADDRESS_PROPERTY_NAME);
     factory.configure(servletFactory);
 
-    verify(servletFactory).setCreator(eq(factory));
+    verify(servletFactory).setCreator(factory);
   }
 
   @Test
@@ -133,12 +133,13 @@ public class WebSocketResourceProviderFactoryTest {
         ReusableAuth.authenticated(account, PrincipalSupplier.forImmutablePrincipal());
 
     when(environment.getAuthenticator()).thenReturn(authenticator);
-    when(authenticator.authenticate(eq(request))).thenReturn(reusableAuth);
+    when(authenticator.authenticate(request)).thenReturn(reusableAuth);
     when(environment.jersey()).thenReturn(jerseyEnvironment);
     final HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
     when(httpServletRequest.getAttribute(REMOTE_ADDRESS_PROPERTY_NAME)).thenReturn("127.0.0.1");
     when(request.getHttpServletRequest()).thenReturn(httpServletRequest);
 
+    @SuppressWarnings("unchecked")
     final AuthenticatedWebSocketUpgradeFilter<Account> filter = mock(AuthenticatedWebSocketUpgradeFilter.class);
     when(environment.getAuthenticatedWebSocketUpgradeFilter()).thenReturn(filter);
 

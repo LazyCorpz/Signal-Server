@@ -70,17 +70,19 @@ public abstract sealed class ReusableAuth<T extends Principal> {
   /**
    * @return A {@link ReusableAuth} indicating no credential were provided
    */
+  @SuppressWarnings("unchecked")
   public static <T extends Principal> ReusableAuth<T> anonymous() {
     //noinspection unchecked
-    return (ReusableAuth<T>) Anonymous.ANON_RESULT;
+    return Anonymous.ANON_RESULT;
   }
 
   /**
    * @return A {@link ReusableAuth} indicating that invalid credentials were provided
    */
+  @SuppressWarnings("unchecked")
   public static <T extends Principal> ReusableAuth<T> invalid() {
     //noinspection unchecked
-    return (ReusableAuth<T>) Invalid.INVALID_RESULT;
+    return Invalid.INVALID_RESULT;
   }
 
   /**
