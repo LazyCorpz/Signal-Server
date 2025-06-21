@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 
 public class RedisClusterUtil {
 
+    private RedisClusterUtil() {
+    }
+
     private static final String[] HASHES_BY_SLOT = new String[SlotHash.SLOT_COUNT];
 
     static {

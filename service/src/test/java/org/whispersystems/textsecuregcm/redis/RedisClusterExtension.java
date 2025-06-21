@@ -50,7 +50,6 @@ public class RedisClusterExtension implements BeforeAllCallback, BeforeEachCallb
     this.retryConfiguration = retryConfiguration;
   }
 
-
   public static Builder builder() {
     return new Builder();
   }
