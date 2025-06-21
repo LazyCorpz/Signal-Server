@@ -20,6 +20,9 @@ public class ConnectionEventLogger {
 
   private static final Logger logger = LoggerFactory.getLogger(ConnectionEventLogger.class);
 
+  private ConnectionEventLogger() {
+  }
+  
   public static void logConnectionEvents(final ClientResources clientResources) {
 
     clientResources.eventBus().get().subscribe(event -> {

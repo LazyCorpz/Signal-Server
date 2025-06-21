@@ -104,11 +104,9 @@ public class ClusterLuaScript {
 
   private <T> Object execute(final StatefulRedisClusterConnection<T, T> connection, final T[] keys, final T[] args) {
     try {
-      try {
-        return connection.sync().evalsha(sha, scriptOutputType, keys, args);
-      } catch (final RedisNoScriptException e) {
-        return connection.sync().eval(script, scriptOutputType, keys, args);
-      }
+      return connection.sync().evalsha(sha, scriptOutputType, keys, args);
+    } catch (final RedisNoScriptException e) {
+      return connection.sync().eval(script, scriptOutputType, keys, args);
     } catch (final Exception e) {
       log.warn("Failed to execute script", e);
       throw e;

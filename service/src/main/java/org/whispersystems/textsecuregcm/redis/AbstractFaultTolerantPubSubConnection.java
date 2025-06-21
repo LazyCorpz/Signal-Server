@@ -35,9 +35,9 @@ abstract class AbstractFaultTolerantPubSubConnection<K, V, C extends StatefulRed
   public void usePubSubConnection(final Consumer<C> consumer) {
     try {
       executeTimer.record(() -> consumer.accept(pubSubConnection));
-    } catch (final Throwable t) {
-      if (t instanceof RedisException) {
-        throw (RedisException) t;
+    } catch (final Exception t) {
+      if (t instanceof RedisException e) {
+        throw e;
       } else {
         throw new RedisException(t);
       }
@@ -47,9 +47,9 @@ abstract class AbstractFaultTolerantPubSubConnection<K, V, C extends StatefulRed
   public <T> T withPubSubConnection(final Function<C, T> function) {
     try {
       return executeTimer.record(() -> function.apply(pubSubConnection));
-    } catch (final Throwable t) {
-      if (t instanceof RedisException) {
-        throw (RedisException) t;
+    } catch (final Exception t) {
+      if (t instanceof RedisException e) {
+        throw e;
       } else {
         throw new RedisException(t);
       }
