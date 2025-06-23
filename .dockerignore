@@ -1,3 +1,4 @@
+# Git ignore files
 target
 local.properties
 .idea
@@ -30,4 +31,37 @@ deployer.log
 .classpath
 .settings
 .DS_Store
-/.git/
+.git
+
+# Docker ignore files
+**/.classpath
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/bin
+**/charts
+**/docker-compose*
+**/compose*
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+**/README.md
+.editorconfig
+.gitattributes
+.github
+.gitmodules
+config
+mvnw.cmd
+service/config

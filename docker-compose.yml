@@ -1,0 +1,68 @@
+# We use the reserved private subnet 10.0.0.0/8 (::ffff:a00:0/104)
+# https://en.wikipedia.org/wiki/Reserved_IP_addresses
+services:
+  'signal-server-production':
+    container_name: 'signal-server'
+    links:
+      - 'redis' # Implicit depends_on
+    profiles:
+      - 'production'
+    build:
+      context: '.'
+      dockerfile: './Dockerfile'
+      target: 'run'
+    environment:
+      - 'REDIS_SERVER_ADDRESS=10.0.1.2'
+    secrets:
+      - source: 'signal-server-production'
+        target: '/usr/app/service/config/production.yml'
+    networks:
+      'signal-server':
+      'redis':
+  'signal-server-testing':
+    links:
+      - 'redis' # Implicit depends_on
+    profiles:
+      - 'testing'
+    build:
+      context: '.'
+      dockerfile: './Dockerfile'
+      target: 'test'
+    environment:
+      - 'REDIS_SERVER_ADDRESS=10.0.1.2'
+    secrets:
+      - source: 'signal-server-testing'
+        target: '/usr/app/service/config/testing.yml'
+    networks:
+      'signal-server':
+      'redis':
+  'redis':
+    container_name: 'redis'
+    image: 'redis:8.0.2-alpine'
+    volumes:
+      - 'redis-data:/data'
+    networks:
+      'redis':
+        ipv4_address: '10.0.1.2' # ::ffff:a00:102
+secrets:
+  'signal-server-production':
+    file: './service/config/production.yml'
+  'signal-server-testing':
+    file: './service/config/testing.yml'
+networks:
+  'signal-server':
+    driver: 'bridge'
+    enable_ipv4: true
+    enable_ipv6: false
+    ipam:
+      config:
+        - subnet: '10.0.0.0/24' # ::ffff:a00:0/120
+          gateway: '10.0.0.1' # ::ffff:a00:1
+  'redis':
+    driver: 'bridge'
+    enable_ipv4: true
+    enable_ipv6: false
+    ipam:
+      config:
+        - subnet: '10.0.1.0/24' # ::ffff:a00:100/120
+          gateway: '10.0.1.1' # ::ffff:a00:101

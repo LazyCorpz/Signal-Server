@@ -37,6 +37,8 @@ public class RedisClusterExtension implements BeforeAllCallback, BeforeEachCallb
 
   private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(2);
   private static final int NODE_COUNT = 2;
+  private static final String REDIS_SERVER_ADDRESS = System.getenv("REDIS_SERVER_ADDRESS");
+  private static final String REDIS_CLIENT_ADDRESS = "127.0.0.1";
 
   private static final RedisServer[] CLUSTER_NODES = new RedisServer[NODE_COUNT];
 
@@ -122,10 +124,13 @@ public class RedisClusterExtension implements BeforeAllCallback, BeforeEachCallb
     redisCluster.useCluster(connection -> connection.sync().flushall());
   }
 
+  public static RedisURI getRedisURI(final RedisServer server) {
+    return RedisURI.create("redis://%s:%d".formatted(REDIS_SERVER_ADDRESS, server.ports().getFirst()));
+  }
+  
   public static List<RedisURI> getRedisURIs() {
     return Arrays.stream(CLUSTER_NODES)
-        .map(node -> "redis://127.0.0.1:%d".formatted(node.ports().getFirst()))
-        .map(RedisURI::create)
+        .map(RedisClusterExtension::getRedisURI)
         .toList();
   }
 
@@ -149,12 +154,12 @@ public class RedisClusterExtension implements BeforeAllCallback, BeforeEachCallb
   }
 
   private static void assembleCluster(final RedisServer... nodes) throws InterruptedException {
-    try (final RedisClient meetClient = RedisClient.create(RedisURI.create("127.0.0.1", nodes[0].ports().getFirst()))) {
+    try (final RedisClient meetClient = RedisClient.create(RedisURI.create(REDIS_CLIENT_ADDRESS, nodes[0].ports().getFirst()))) {
       final StatefulRedisConnection<String, String> connection = meetClient.connect();
       final RedisCommands<String, String> commands = connection.sync();
 
       for (int i = 1; i < nodes.length; i++) {
-        commands.clusterMeet("127.0.0.1", nodes[i].ports().getFirst());
+        commands.clusterMeet(REDIS_CLIENT_ADDRESS, nodes[i].ports().getFirst());
       }
     }
 
@@ -165,7 +170,7 @@ public class RedisClusterExtension implements BeforeAllCallback, BeforeEachCallb
       final int endExclusive = i == nodes.length - 1 ? SlotHash.SLOT_COUNT : (i + 1) * slotsPerNode;
 
       try (final RedisClient assignSlotClient = RedisClient.create(
-          RedisURI.create("127.0.0.1", nodes[i].ports().getFirst()));
+          RedisURI.create(REDIS_CLIENT_ADDRESS, nodes[i].ports().getFirst()));
           final StatefulRedisConnection<String, String> assignSlotConnection = assignSlotClient.connect()) {
         final int[] slots = new int[endExclusive - startInclusive];
 
@@ -177,7 +182,7 @@ public class RedisClusterExtension implements BeforeAllCallback, BeforeEachCallb
       }
     }
 
-    try (final RedisClient waitClient = RedisClient.create(RedisURI.create("127.0.0.1", nodes[0].ports().getFirst()));
+    try (final RedisClient waitClient = RedisClient.create(RedisURI.create(REDIS_CLIENT_ADDRESS, nodes[0].ports().getFirst()));
         final StatefulRedisConnection<String, String> connection = waitClient.connect()) {
       // CLUSTER INFO gives us a big blob of key-value pairs, but the one we're interested in is `cluster_state`.
       // According to https://redis.io/commands/cluster-info, `cluster_state:ok` means that the node is ready to
