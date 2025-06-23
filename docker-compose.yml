@@ -49,6 +49,8 @@ secrets:
     file: './service/config/production.yml'
   'signal-server-testing':
     file: './service/config/testing.yml'
+volumes:
+  'redis-data':
 networks:
   'signal-server':
     driver: 'bridge'
