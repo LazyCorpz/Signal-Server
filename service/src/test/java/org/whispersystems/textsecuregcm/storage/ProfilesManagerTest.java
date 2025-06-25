@@ -18,13 +18,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import io.lettuce.core.RedisException;
-import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
-import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -36,6 +34,10 @@ import org.whispersystems.textsecuregcm.tests.util.MockRedisFuture;
 import org.whispersystems.textsecuregcm.tests.util.ProfileTestHelper;
 import org.whispersystems.textsecuregcm.tests.util.RedisClusterHelper;
 import org.whispersystems.textsecuregcm.util.TestRandomUtil;
+
+import io.lettuce.core.RedisException;
+import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
+import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 
@@ -218,7 +220,7 @@ public class ProfilesManagerTest {
     verify(commands, times(1)).hset(eq(ProfilesManager.getCacheKey(uuid)), eq("someversion"), any());
     verifyNoMoreInteractions(commands);
 
-    verify(profiles, times(1)).set(eq(uuid), eq(profile));
+    verify(profiles, times(1)).set(uuid, eq(profile));
     verifyNoMoreInteractions(profiles);
   }
 
@@ -230,14 +232,14 @@ public class ProfilesManagerTest {
         null, null, "somecommitment".getBytes());
 
     when(asyncCommands.hset(eq(ProfilesManager.getCacheKey(uuid)), eq("someversion"), anyString())).thenReturn(MockRedisFuture.completedFuture(null));
-    when(profiles.setAsync(eq(uuid), eq(profile))).thenReturn(CompletableFuture.completedFuture(null));
+    when(profiles.setAsync(uuid, eq(profile))).thenReturn(CompletableFuture.completedFuture(null));
 
     profilesManager.setAsync(uuid, profile).join();
 
     verify(asyncCommands, times(1)).hset(eq(ProfilesManager.getCacheKey(uuid)), eq("someversion"), any());
     verifyNoMoreInteractions(asyncCommands);
 
-    verify(profiles, times(1)).setAsync(eq(uuid), eq(profile));
+    verify(profiles, times(1)).setAsync(uuid, eq(profile));
     verifyNoMoreInteractions(profiles);
   }
 

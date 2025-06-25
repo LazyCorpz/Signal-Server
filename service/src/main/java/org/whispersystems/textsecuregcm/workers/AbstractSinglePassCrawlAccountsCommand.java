@@ -5,18 +5,17 @@
 
 package org.whispersystems.textsecuregcm.workers;
 
-import io.dropwizard.core.Application;
-import io.dropwizard.core.cli.Cli;
-import io.dropwizard.core.cli.EnvironmentCommand;
-import io.dropwizard.core.setup.Environment;
 import java.util.Objects;
-import net.sourceforge.argparse4j.inf.Namespace;
-import net.sourceforge.argparse4j.inf.Subparser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.textsecuregcm.WhisperServerConfiguration;
 import org.whispersystems.textsecuregcm.storage.Account;
-import org.whispersystems.textsecuregcm.util.logging.UncaughtExceptionHandler;
+
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Environment;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 

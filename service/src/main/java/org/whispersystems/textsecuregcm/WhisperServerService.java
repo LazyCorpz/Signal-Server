@@ -7,36 +7,6 @@ package org.whispersystems.textsecuregcm;
 import static com.codahale.metrics.MetricRegistry.name;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.collect.Lists;
-import com.webauthn4j.appattest.DeviceCheckManager;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.AuthFilter;
-import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.auth.basic.BasicCredentials;
-import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
-import io.dropwizard.configuration.SubstitutingSourceProvider;
-import io.dropwizard.core.Application;
-import io.dropwizard.core.server.DefaultServerFactory;
-import io.dropwizard.core.setup.Bootstrap;
-import io.dropwizard.core.setup.Environment;
-import io.dropwizard.jetty.HttpsConnectorFactory;
-import io.grpc.ServerBuilder;
-import io.lettuce.core.metrics.MicrometerCommandLatencyRecorder;
-import io.lettuce.core.metrics.MicrometerOptions;
-import io.lettuce.core.resource.ClientResources;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
-import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
-import io.netty.channel.local.LocalAddress;
-import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.resolver.ResolvedAddressTypes;
-import io.netty.resolver.dns.DnsNameResolver;
-import io.netty.resolver.dns.DnsNameResolverBuilder;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.Filter;
-import jakarta.servlet.ServletRegistration;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.net.http.HttpClient;
@@ -62,7 +32,9 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 import javax.annotation.Nullable;
+
 import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.glassfish.jersey.server.ServerProperties;
 import org.signal.i18n.HeaderControlledResourceBundleLookup;
@@ -283,6 +255,38 @@ import org.whispersystems.textsecuregcm.workers.UnlinkDeviceCommand;
 import org.whispersystems.textsecuregcm.workers.ZkParamsCommand;
 import org.whispersystems.websocket.WebSocketResourceProviderFactory;
 import org.whispersystems.websocket.setup.WebSocketEnvironment;
+
+import com.google.common.collect.Lists;
+import com.webauthn4j.appattest.DeviceCheckManager;
+
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.AuthFilter;
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.auth.basic.BasicCredentials;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
+import io.dropwizard.core.Application;
+import io.dropwizard.core.server.DefaultServerFactory;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.jetty.HttpsConnectorFactory;
+import io.grpc.ServerBuilder;
+import io.lettuce.core.metrics.MicrometerCommandLatencyRecorder;
+import io.lettuce.core.metrics.MicrometerOptions;
+import io.lettuce.core.resource.ClientResources;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.binder.grpc.MetricCollectingServerInterceptor;
+import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
+import io.netty.channel.local.LocalAddress;
+import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.resolver.ResolvedAddressTypes;
+import io.netty.resolver.dns.DnsNameResolver;
+import io.netty.resolver.dns.DnsNameResolverBuilder;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.ServletRegistration;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -581,7 +585,7 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     final DnsNameResolver cloudflareDnsResolver = new DnsNameResolverBuilder(dnsResolutionEventLoopGroup.next())
             .resolvedAddressTypes(ResolvedAddressTypes.IPV6_PREFERRED)
             .completeOncePreferredResolved(false)
-            .channelType(NioDatagramChannel.class)
+            .datagramChannelType(NioDatagramChannel.class)
             .socketChannelType(NioSocketChannel.class)
             .build();
 

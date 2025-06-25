@@ -5,15 +5,15 @@
 
 package org.whispersystems.textsecuregcm.identity;
 
-import io.micrometer.core.instrument.Metrics;
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HexFormat;
 import java.util.UUID;
+
 import org.signal.libsignal.protocol.ServiceId;
-import org.whispersystems.textsecuregcm.metrics.MetricsUtil;
 import org.whispersystems.textsecuregcm.util.UUIDUtil;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * An identifier for an account based on the account's ACI.

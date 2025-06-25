@@ -5,14 +5,7 @@
 package org.whispersystems.textsecuregcm.push;
 
 import static com.codahale.metrics.MetricRegistry.name;
-import static org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope;
 
-import com.google.common.annotations.VisibleForTesting;
-import io.dropwizard.util.DataSize;
-import io.micrometer.core.instrument.DistributionSummary;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,7 +13,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
 import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.StringUtils;
 import org.signal.libsignal.protocol.SealedSenderMultiRecipientMessage;
 import org.signal.libsignal.protocol.util.Pair;
@@ -28,6 +23,7 @@ import org.whispersystems.textsecuregcm.controllers.MessageController;
 import org.whispersystems.textsecuregcm.controllers.MismatchedDevices;
 import org.whispersystems.textsecuregcm.controllers.MismatchedDevicesException;
 import org.whispersystems.textsecuregcm.controllers.MultiRecipientMismatchedDevicesException;
+import org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope;
 import org.whispersystems.textsecuregcm.experiment.ExperimentEnrollmentManager;
 import org.whispersystems.textsecuregcm.identity.IdentityType;
 import org.whispersystems.textsecuregcm.identity.ServiceIdentifier;
@@ -37,6 +33,14 @@ import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.Device;
 import org.whispersystems.textsecuregcm.storage.MessagesManager;
 import org.whispersystems.textsecuregcm.util.Util;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import io.dropwizard.util.DataSize;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 
 /**
  * A MessageSender sends Signal messages to destination devices. Messages may be "normal" user-to-user messages,
@@ -152,7 +156,7 @@ public class MessageSender {
         .forEach((deviceId, destinationPresent) -> {
           final Envelope message = messagesByDeviceId.get(deviceId);
 
-          if (!destinationPresent && !message.getEphemeral()) {
+          if (!((boolean) destinationPresent) && !message.getEphemeral()) {
             try {
               pushNotificationManager.sendNewMessageNotification(destination, deviceId, message.getUrgent());
             } catch (final NotPushRegisteredException ignored) {
@@ -237,7 +241,7 @@ public class MessageSender {
         .thenAccept(clientPresenceByAccountAndDevice ->
             clientPresenceByAccountAndDevice.forEach((account, clientPresenceByDeviceId) ->
                 clientPresenceByDeviceId.forEach((deviceId, clientPresent) -> {
-                  if (!clientPresent && !isEphemeral) {
+                  if (!((boolean) clientPresent) && !isEphemeral) {
                     try {
                       pushNotificationManager.sendNewMessageNotification(account, deviceId, isUrgent);
                     } catch (final NotPushRegisteredException ignored) {
@@ -273,7 +277,7 @@ public class MessageSender {
             Tag.of("oversize", String.valueOf(oversize)),
             Tag.of("multiRecipientMessage", String.valueOf(isMultiRecipientMessage)),
             Tag.of("syncMessage", String.valueOf(isSyncMessage)),
-            Tag.of("story", String.valueOf(isStory))))
+            Tag.of(STORY_TAG_NAME, String.valueOf(isStory))))
         .publishPercentileHistogram(true)
         .register(Metrics.globalRegistry)
         .record(contentLength);
@@ -282,7 +286,7 @@ public class MessageSender {
       Metrics.counter(REJECT_OVERSIZE_MESSAGE_COUNTER_NAME, Tags.of(UserAgentTagUtil.getPlatformTag(userAgent),
               Tag.of("multiRecipientMessage", String.valueOf(isMultiRecipientMessage)),
               Tag.of("syncMessage", String.valueOf(isSyncMessage)),
-              Tag.of("story", String.valueOf(isStory))))
+              Tag.of(STORY_TAG_NAME, String.valueOf(isStory))))
           .increment();
 
       throw new MessageTooLargeException();

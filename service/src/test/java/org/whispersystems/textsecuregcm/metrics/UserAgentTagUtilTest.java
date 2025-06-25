@@ -10,19 +10,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.vdurmont.semver4j.Semver;
-import io.micrometer.core.instrument.Tag;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.whispersystems.textsecuregcm.storage.ClientReleaseManager;
-import org.whispersystems.textsecuregcm.util.ua.ClientPlatform;
+
+import io.micrometer.core.instrument.Tag;
 
 class UserAgentTagUtilTest {
 

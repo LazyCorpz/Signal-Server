@@ -1,6 +1,5 @@
 package org.whispersystems.textsecuregcm.workers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import net.sourceforge.argparse4j.inf.Namespace;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -24,6 +23,8 @@ import org.whispersystems.textsecuregcm.push.IdleDeviceNotificationScheduler;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.Device;
 import org.whispersystems.textsecuregcm.storage.MessagesManager;
+
+import net.sourceforge.argparse4j.inf.Namespace;
 import reactor.core.publisher.Flux;
 
 class NotifyIdleDevicesCommandTest {

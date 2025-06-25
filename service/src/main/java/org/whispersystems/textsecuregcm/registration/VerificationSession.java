@@ -5,12 +5,14 @@
 
 package org.whispersystems.textsecuregcm.registration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nullable;
+
 import org.whispersystems.textsecuregcm.storage.SerializedExpireableJsonDynamoStore;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Server-internal stored session object. Primarily used by

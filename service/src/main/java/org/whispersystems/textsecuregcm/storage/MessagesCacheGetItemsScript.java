@@ -5,11 +5,12 @@
 
 package org.whispersystems.textsecuregcm.storage;
 
-import io.lettuce.core.ScriptOutputType;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
+
+import io.lettuce.core.ScriptOutputType;
 import org.whispersystems.textsecuregcm.redis.ClusterLuaScript;
 import org.whispersystems.textsecuregcm.redis.FaultTolerantRedisClusterClient;
 import reactor.core.publisher.Mono;
@@ -38,7 +39,12 @@ class MessagesCacheGetItemsScript {
     );
     //noinspection unchecked
     return getItemsScript.executeBinaryReactive(keys, args)
-        .map(result -> (List<byte[]>) result)
+        .map(result -> {
+          @SuppressWarnings("unchecked")
+          List<byte[]> out = (List<byte[]>) result;
+          
+          return out;
+        })
         .next();
   }
 

@@ -5,9 +5,9 @@
 
 package org.whispersystems.textsecuregcm.util.ua;
 
-import com.vdurmont.semver4j.Semver;
 import javax.annotation.Nullable;
-import java.util.Objects;
+
+import com.vdurmont.semver4j.Semver;
 
 public record UserAgent(ClientPlatform platform, Semver version, @Nullable String additionalSpecifiers) {
 }

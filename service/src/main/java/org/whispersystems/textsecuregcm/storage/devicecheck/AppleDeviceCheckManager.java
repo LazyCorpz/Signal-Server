@@ -4,6 +4,23 @@
  */
 package org.whispersystems.textsecuregcm.storage.devicecheck;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.Duration;
+import java.util.Base64;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.whispersystems.textsecuregcm.controllers.RateLimitExceededException;
+import org.whispersystems.textsecuregcm.redis.FaultTolerantRedisClusterClient;
+import org.whispersystems.textsecuregcm.storage.Account;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.webauthn4j.appattest.DeviceCheckManager;
 import com.webauthn4j.appattest.authenticator.DCAppleDevice;
@@ -18,24 +35,10 @@ import com.webauthn4j.data.attestation.AttestationObject;
 import com.webauthn4j.data.client.challenge.DefaultChallenge;
 import com.webauthn4j.verifier.exception.MaliciousCounterValueException;
 import com.webauthn4j.verifier.exception.VerificationException;
+
 import io.lettuce.core.RedisException;
 import io.lettuce.core.SetArgs;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.Duration;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
-import javax.annotation.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.whispersystems.textsecuregcm.controllers.RateLimitExceededException;
-import org.whispersystems.textsecuregcm.limits.RateLimiters;
-import org.whispersystems.textsecuregcm.redis.FaultTolerantRedisClusterClient;
-import org.whispersystems.textsecuregcm.storage.Account;
 
 /**
  * Register Apple DeviceCheck App Attestations and verify the corresponding assertions.
@@ -126,7 +129,7 @@ public class AppleDeviceCheckManager {
     try {
       dcAttestationData = deviceCheckManager.validate(dcAttestationRequest,
           new DCAttestationParameters(new DCServerProperty(teamId, bundleId, new DefaultChallenge(challenge))));
-    } catch (VerificationException e) {
+    } catch (VerificationException e) { // NOSONAR java:S2139 Exception is logged and rethrown
       logger.info("Failed to verify attestation", e);
       throw new DeviceCheckVerificationFailedException(e);
     }
@@ -194,7 +197,7 @@ public class AppleDeviceCheckManager {
       // We will only accept assertions that have a sign count greater than the last assertion we saw. Step 5 here:
       // https://developer.apple.com/documentation/devicecheck/validating-apps-that-connect-to-your-server#Verify-the-assertion
       throw new RequestReuseException("Sign count from request less than stored sign count");
-    } catch (VerificationException e) {
+    } catch (VerificationException e) { // NOSONAR java:S2139 Exception is logged and rethrown
       logger.info("Failed to validate DeviceCheck assert", e);
       throw new DeviceCheckVerificationFailedException(e);
     }

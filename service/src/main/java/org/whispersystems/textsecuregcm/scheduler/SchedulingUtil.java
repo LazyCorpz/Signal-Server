@@ -1,15 +1,9 @@
 package org.whispersystems.textsecuregcm.scheduler;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberToTimeZonesMapper;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.zone.ZoneRules;
 import java.util.Comparator;
@@ -19,7 +13,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.whispersystems.textsecuregcm.storage.Account;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberToTimeZonesMapper;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 public class SchedulingUtil {
 
