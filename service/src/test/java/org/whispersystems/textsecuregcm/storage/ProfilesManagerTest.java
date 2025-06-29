@@ -220,7 +220,7 @@ public class ProfilesManagerTest {
     verify(commands, times(1)).hset(eq(ProfilesManager.getCacheKey(uuid)), eq("someversion"), any());
     verifyNoMoreInteractions(commands);
 
-    verify(profiles, times(1)).set(uuid, eq(profile));
+    verify(profiles, times(1)).set(eq(uuid), eq(profile));
     verifyNoMoreInteractions(profiles);
   }
 
@@ -232,14 +232,14 @@ public class ProfilesManagerTest {
         null, null, "somecommitment".getBytes());
 
     when(asyncCommands.hset(eq(ProfilesManager.getCacheKey(uuid)), eq("someversion"), anyString())).thenReturn(MockRedisFuture.completedFuture(null));
-    when(profiles.setAsync(uuid, eq(profile))).thenReturn(CompletableFuture.completedFuture(null));
+    when(profiles.setAsync(eq(uuid), eq(profile))).thenReturn(CompletableFuture.completedFuture(null));
 
     profilesManager.setAsync(uuid, profile).join();
 
     verify(asyncCommands, times(1)).hset(eq(ProfilesManager.getCacheKey(uuid)), eq("someversion"), any());
     verifyNoMoreInteractions(asyncCommands);
 
-    verify(profiles, times(1)).setAsync(uuid, eq(profile));
+    verify(profiles, times(1)).setAsync(eq(uuid), eq(profile));
     verifyNoMoreInteractions(profiles);
   }
 
