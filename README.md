@@ -6,19 +6,19 @@ Documentation
 
 Looking for protocol documentation? Check out the website!
 
-https://signal.org/docs/
+<https://signal.org/docs/>
 
 How to Build
 ------------
 
-```shell script
-$ ./mvnw clean test
+```shell
+./mvnw clean test
 ```
 
 Security
 --------
 
-Security issues should be sent to <a href=mailto:security@signal.org>security@signal.org</a>.
+Security issues should be sent to <mailto:security@signal.org>.
 
 Help
 ----
@@ -40,6 +40,6 @@ License
 
 Copyright 2013 Signal Messenger, LLC
 
-Licensed under the GNU AGPLv3: https://www.gnu.org/licenses/agpl-3.0.html
+Licensed under the GNU AGPLv3: <https://www.gnu.org/licenses/agpl-3.0.html>
 
 [community forum]: https://community.signalusers.org
