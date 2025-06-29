@@ -5,16 +5,10 @@ local.properties
 run.sh
 *~
 local.yml
-config/production.yml
-config/federated.yml
-config/staging.yml
-config/testing.yml
-config/deploy.properties
-/service/config/production.yml
-/service/config/federated.yml
-/service/config/staging.yml
-/service/config/testing.yml
-/service/config/deploy.properties
+/config
+/service/config
+!/service/config/sample-secrets-bundle.yml
+!/service/config/sample.yml
 /service/dependency-reduced-pom.xml
 .java-version
 .opsmanage
@@ -30,4 +24,4 @@ deployer.log
 .classpath
 .settings
 .DS_Store
-/.git/
+.git

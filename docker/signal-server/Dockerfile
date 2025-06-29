@@ -21,24 +21,16 @@ WORKDIR /usr/app
 COPY --from=dependencies "/usr/app/" "./"
 COPY "./" "./"
 
-ENTRYPOINT [ "./mvnw", "verify" ]
+ENTRYPOINT [ "./mvnw", "verify", "-Ptest-server" ]
 
-# Compiling and packaging project into a JAR file
-FROM eclipse-temurin:21 AS package
+# Building and running project JAR file
+FROM eclipse-temurin:21 AS run
 
 COPY --from=dependencies "/root/.m2/" "/root/.m2/"
 WORKDIR /usr/app
 COPY --from=dependencies "/usr/app/" "./"
+COPY "./docker/signal-server/docker-entrypoint.sh" "./docker-entrypoint.sh"
 COPY "./" "./"
 
-# https://maven.apache.org/surefire/maven-surefire-plugin/examples/skipping-tests.html
-RUN [ "./mvnw", "-o", "package", "-Dmaven.test.skip=true" ]
-
-# Running the application
-FROM eclipse-temurin:21 AS run
-
-WORKDIR /usr/app
-# TODO Is this filename correct?
-COPY --from=package "/usr/app/target/TextSecureServer-JGITVER.jar" "./app.jar"
-
-ENTRYPOINT [ "java", "-jar", "./app.jar" ]
+# CMD args passed to Maven and JVM
+RUN [ "./docker-entrypoint.sh" ]

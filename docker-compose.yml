@@ -3,54 +3,50 @@
 services:
   'signal-server-production':
     container_name: 'signal-server'
-    links:
-      - 'redis' # Implicit depends_on
     profiles:
       - 'production'
     build:
       context: '.'
-      dockerfile: './Dockerfile'
+      dockerfile: './docker/signal-server/Dockerfile'
       target: 'run'
+    command: '-Dsecrets.bundle.filename=config/production-secrets-bundle.yml'
     environment:
-      - 'REDIS_SERVER_ADDRESS=10.0.1.2'
+      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
+      - 'SIGNAL_SERVER_CONFIG=config/production.yml'
     secrets:
-      - source: 'signal-server-production'
+      - source: 'signal-server-production-config'
         target: '/usr/app/service/config/production.yml'
+      - source: 'signal-server-production-bundle'
+        target: '/usr/app/config/production-secrets-bundle.yml'
     networks:
       'signal-server':
-      'redis':
   'signal-server-testing':
-    links:
-      - 'redis' # Implicit depends_on
     profiles:
       - 'testing'
     build:
       context: '.'
-      dockerfile: './Dockerfile'
+      dockerfile: './docker/signal-server/Dockerfile'
       target: 'test'
+    command: '-Dsecrets.bundle.filename=config/test-secrets-bundle.yml'
     environment:
-      - 'REDIS_SERVER_ADDRESS=10.0.1.2'
+      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
+      - 'SIGNAL_SERVER_CONFIG=config/test.yml'
     secrets:
-      - source: 'signal-server-testing'
-        target: '/usr/app/service/config/testing.yml'
+      - source: 'signal-server-testing-config'
+        target: '/usr/app/service/config/test.yml'
+      - source: 'signal-server-testing-bundle'
+        target: '/usr/app/config/test-secrets-bundle.yml'
     networks:
       'signal-server':
-      'redis':
-  'redis':
-    container_name: 'redis'
-    image: 'redis:8.0.2-alpine'
-    volumes:
-      - 'redis-data:/data'
-    networks:
-      'redis':
-        ipv4_address: '10.0.1.2' # ::ffff:a00:102
 secrets:
-  'signal-server-production':
+  'signal-server-production-config':
     file: './service/config/production.yml'
-  'signal-server-testing':
-    file: './service/config/testing.yml'
-volumes:
-  'redis-data':
+  'signal-server-production-bundle':
+    file: './config/production-secrets-bundle.yml'
+  'signal-server-testing-config':
+    file: './service/config/test.yml'
+  'signal-server-testing-bundle':
+    file: './config/test-secrets-bundle.yml'
 networks:
   'signal-server':
     driver: 'bridge'
@@ -60,11 +56,3 @@ networks:
       config:
         - subnet: '10.0.0.0/24' # ::ffff:a00:0/120
           gateway: '10.0.0.1' # ::ffff:a00:1
-  'redis':
-    driver: 'bridge'
-    enable_ipv4: true
-    enable_ipv6: false
-    ipam:
-      config:
-        - subnet: '10.0.1.0/24' # ::ffff:a00:100/120
-          gateway: '10.0.1.1' # ::ffff:a00:101
