@@ -21,7 +21,7 @@ WORKDIR /usr/app
 COPY --from=dependencies "/usr/app/" "./"
 COPY "./" "./"
 
-ENTRYPOINT [ "./mvnw", "verify", "-Ptest-server" ]
+ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server" ]
 
 # Building and running project JAR file
 FROM eclipse-temurin:21 AS run
@@ -33,4 +33,4 @@ COPY "./docker/signal-server/docker-entrypoint.sh" "./docker-entrypoint.sh"
 COPY "./" "./"
 
 # CMD args passed to Maven and JVM
-RUN [ "./docker-entrypoint.sh" ]
+ENTRYPOINT [ "./docker-entrypoint.sh" ]
