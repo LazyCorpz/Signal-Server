@@ -1,5 +1,8 @@
+# Same version as in pom.xml: eclipse-temurin:21.0.6_7-jre-jammy
+ARG JAVA_VERSION=eclipse-temurin@sha256:02fc89fa8766a9ba221e69225f8d1c10bb91885ddbd3c112448e23488ba40ab6
+
 # Installing Maven dependencies
-FROM eclipse-temurin:21 AS dependencies
+FROM ${JAVA_VERSION} AS dependencies
 
 WORKDIR /usr/app
 COPY "./mvnw" "./mvnw"
@@ -14,7 +17,7 @@ COPY "./api-doc/pom.xml" "./api-doc/pom.xml"
 RUN [ "./mvnw", "dependency:go-offline", "-U", "-q" ]
 
 # Compiling and testing the application
-FROM eclipse-temurin:21 AS test
+FROM ${JAVA_VERSION} AS test
 
 COPY --from=dependencies "/root/.m2/" "/root/.m2/"
 WORKDIR /usr/app
@@ -24,7 +27,7 @@ COPY "./" "./"
 ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server" ]
 
 # Building and running project JAR file
-FROM eclipse-temurin:21 AS run
+FROM ${JAVA_VERSION} AS run
 
 COPY --from=dependencies "/root/.m2/" "/root/.m2/"
 WORKDIR /usr/app
