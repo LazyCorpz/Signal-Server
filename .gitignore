@@ -25,3 +25,4 @@ deployer.log
 .settings
 .DS_Store
 .git
+**/*.jar
