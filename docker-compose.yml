@@ -1,10 +1,10 @@
 # We use the reserved private subnet 10.0.0.0/8 (::ffff:a00:0/104)
 # https://en.wikipedia.org/wiki/Reserved_IP_addresses
 services:
-  'signal-server-production':
+  'signal-server-prod':
     container_name: 'signal-server'
     profiles:
-      - 'production'
+      - 'prod'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
@@ -20,14 +20,35 @@ services:
         target: '/usr/app/config/production-secrets-bundle.yml'
     networks:
       'signal-server':
-  'signal-server-testing':
+  'signal-server-prod-testing':
+    container_name: 'signal-server'
     profiles:
-      - 'testing'
+      - 'prod'
+      - 'test'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
-      target: 'test'
-    command: '-Dsecrets.bundle.filename=config/test-secrets-bundle.yml'
+      target: 'integration-tests'
+    command: '-Dsecrets.bundle.filename=config/production-secrets-bundle.yml'
+    environment:
+      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
+      - 'SIGNAL_SERVER_CONFIG=config/production.yml'
+    secrets:
+      - source: 'signal-server-production-config'
+        target: '/usr/app/service/config/production.yml'
+      - source: 'signal-server-production-bundle'
+        target: '/usr/app/config/production-secrets-bundle.yml'
+    networks:
+      'signal-server':
+  'signal-server-dev-testing':
+    profiles:
+      - 'dev'
+      - 'test'
+    build:
+      context: '.'
+      dockerfile: './docker/signal-server/Dockerfile'
+      target: 'integration-tests'
+    # command: '-Dsecrets.bundle.filename=config/test-secrets-bundle.yml'
     environment:
       - 'REDIS_SERVER_ADDRESS=127.0.0.1'
       - 'SIGNAL_SERVER_CONFIG=config/test.yml'
@@ -54,5 +75,5 @@ networks:
     enable_ipv6: false
     ipam:
       config:
-        - subnet: '10.0.0.0/24' # ::ffff:a00:0/120
-          gateway: '10.0.0.1' # ::ffff:a00:1
+        - subnet: '10.0.0.0/24' # 10.0.0.X
+          gateway: '10.0.0.1'

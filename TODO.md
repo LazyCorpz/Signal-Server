@@ -15,6 +15,24 @@ This list is roughly in chronologcal order.
 - Support [Android][signal-android] clients,
   because Signal will not let you create an account on desktop.
 - Support [Desktop][signal-desktop] clients
+<!--
+- Add to Dockerfile command: (from [pom.xml](./service/pom.xml))
+
+  ```xml
+  <jvmFlags>
+    <jvmFlag>-server</jvmFlag>
+    <jvmFlag>-Djava.awt.headless=true</jvmFlag>
+    <jvmFlag>-Djdk.nio.maxCachedBufferSize=262144</jvmFlag>
+    <jvmFlag>-Dlog4j2.formatMsgNoLookups=true</jvmFlag>
+    <jvmFlag>-XX:MaxRAMPercentage=75</jvmFlag>
+    <jvmFlag>-XX:+HeapDumpOnOutOfMemoryError</jvmFlag>
+    <jvmFlag>-XX:HeapDumpPath=/tmp/heapdump.bin</jvmFlag>
+  </jvmFlags>
+  <ports>
+    <port>8080</port>
+  </ports>
+  ```
+-->
 
 ## Possible changes
 

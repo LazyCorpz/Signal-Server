@@ -25,5 +25,5 @@ deployer.log
 .settings
 .DS_Store
 .git
-**/*.jar
+.mvn/wrapper/maven-wrapper.jar
 **/*.old

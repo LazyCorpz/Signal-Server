@@ -1,39 +1,72 @@
-# Same version as in pom.xml: eclipse-temurin:21.0.6_7-jre-jammy
-ARG JAVA_VERSION=eclipse-temurin@sha256:02fc89fa8766a9ba221e69225f8d1c10bb91885ddbd3c112448e23488ba40ab6
+# JDK version matches JRE version in pom.xml
+# eclipse-temurin:21.0.6_7-jdk-jammy
+ARG JDK_VERSION=eclipse-temurin@sha256:24a8854594eea72c16822953e6cb96c78d10fc3c77b7b8a60ce8e5ac440a2337
 
-# Installing Maven dependencies
-FROM ${JAVA_VERSION} AS dependencies
+# Installing dependencies
+FROM ${JDK_VERSION} AS dependencies
 
 WORKDIR /usr/app
-COPY "./mvnw" "./mvnw"
-COPY "./.mvn/" "./.mvn/"
-COPY "./pom.xml" "./pom.xml"
-COPY "./websocket-resources/pom.xml" "./websocket-resources/pom.xml"
-COPY [ "./service/pom.xml", "./service/assembly.xml", "./service/" ]
-COPY "./integration-tests/pom.xml" "./integration-tests/pom.xml"
-COPY "./api-doc/pom.xml" "./api-doc/pom.xml"
+COPY [ "./mvnw", "./mvnw" ]
+COPY [ "./.mvn/", "./.mvn/" ]
+COPY [ "./pom.xml", "./pom.xml" ]
+COPY [ "./websocket-resources/pom.xml", "./websocket-resources/pom.xml" ]
+COPY [ "./service/pom.xml", "./service/pom.xml" ]
+COPY [ "./api-doc/pom.xml", "./api-doc/pom.xml" ]
+COPY [ "./integration-tests/pom.xml", "./integration-tests/pom.xml" ]
 
-# RUN [ "./mvnw", "verify", "--fail-never", "-q" ]
 RUN [ "./mvnw", "dependency:go-offline", "-U", "-q" ]
 
-# Compiling and testing the application
-FROM ${JAVA_VERSION} AS test
+# Building websocket-resources module
+FROM ${JDK_VERSION} AS websocket-resources
 
-COPY --from=dependencies "/root/.m2/" "/root/.m2/"
 WORKDIR /usr/app
-COPY --from=dependencies "/usr/app/" "./"
-COPY "./" "./"
+COPY --from=dependencies [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=dependencies [ "/usr/app/", "./" ]
+COPY [ "./websocket-resources/", "./websocket-resources/" ]
+RUN [ "./mvnw", "install", "-pl", ":websocket-resources", "-am", "-q" ]
 
-ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server" ]
+# For testing purposes, we can keep the container running
+ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 
-# Building and running project JAR file
-FROM ${JAVA_VERSION} AS run
+# Building service module
+FROM ${JDK_VERSION} AS service
 
-COPY --from=dependencies "/root/.m2/" "/root/.m2/"
 WORKDIR /usr/app
-COPY --from=dependencies "/usr/app/" "./"
-COPY "./docker/signal-server/docker-entrypoint.sh" "./docker-entrypoint.sh"
-COPY "./" "./"
+COPY --from=websocket-resources [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=websocket-resources [ "/usr/app/", "./" ]
+COPY [ "./service/", "./service/" ]
+COPY [ "./spam-filter/", "./spam-filter/" ]
 
-# CMD args passed to Maven and JVM
+RUN [ "./mvnw", "install", "-pl", ":service", "-am", "-q" ]
+
+# Building api-doc module
+FROM ${JDK_VERSION} AS api-doc
+
+WORKDIR /usr/app
+COPY --from=service [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=service [ "/usr/app/", "./" ]
+COPY [ "./api-doc/", "./api-doc/" ]
+
+RUN [ "./mvnw", "install", "-pl", ":api-doc", "-am", "-q" ]
+
+# Building and running integration tests
+FROM ${JDK_VERSION} AS integration-tests
+
+WORKDIR /usr/app
+COPY --from=api-doc [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=api-doc [ "/usr/app/", "./" ]
+COPY [ "./", "./" ]
+
+# Installation requires mounted secrets
+ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server", "-q" ]
+
+# Packaging and running project JAR file
+FROM ${JDK_VERSION} AS run
+
+WORKDIR /usr/app
+COPY --from=integration-tests [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=integration-tests [ "/usr/app/", "./" ]
+COPY [ "./docker/signal-server/docker-entrypoint.sh", "./docker-entrypoint.sh" ]
+
+# CMD args are passed to both Maven and JVM
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
