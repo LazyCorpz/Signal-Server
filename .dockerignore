@@ -27,6 +27,7 @@ deployer.log
 .DS_Store
 .git
 **/*.jar
+**/*.old
 
 # Docker ignore files
 **/.classpath
@@ -58,6 +59,4 @@ deployer.log
 .gitattributes
 .github
 .gitmodules
-config
-service/config
 docker

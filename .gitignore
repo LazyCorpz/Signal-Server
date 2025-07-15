@@ -26,3 +26,4 @@ deployer.log
 .DS_Store
 .git
 **/*.jar
+**/*.old

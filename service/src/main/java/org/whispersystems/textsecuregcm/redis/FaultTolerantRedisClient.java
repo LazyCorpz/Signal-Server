@@ -1,5 +1,16 @@
 package org.whispersystems.textsecuregcm.redis;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.whispersystems.textsecuregcm.configuration.CircuitBreakerConfiguration;
+import org.whispersystems.textsecuregcm.configuration.RedisConfiguration;
+import org.whispersystems.textsecuregcm.configuration.RetryConfiguration;
+import org.whispersystems.textsecuregcm.util.CircuitBreakerUtil;
+
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.retry.Retry;
 import io.lettuce.core.ClientOptions;
@@ -14,16 +25,7 @@ import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import io.lettuce.core.codec.ByteArrayCodec;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.resource.ClientResources;
-import org.whispersystems.textsecuregcm.configuration.CircuitBreakerConfiguration;
-import org.whispersystems.textsecuregcm.configuration.RedisConfiguration;
-import org.whispersystems.textsecuregcm.configuration.RetryConfiguration;
-import org.whispersystems.textsecuregcm.util.CircuitBreakerUtil;
 import reactor.core.scheduler.Schedulers;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class FaultTolerantRedisClient {
 
@@ -93,7 +95,7 @@ public class FaultTolerantRedisClient {
 
     this.circuitBreaker = CircuitBreaker.of(name + "-breaker", circuitBreakerConfiguration.toCircuitBreakerConfig());
     this.retry = Retry.of(name + "-retry", retryConfiguration.toRetryConfigBuilder()
-        .retryOnException(exception -> exception instanceof RedisCommandTimeoutException).build());
+        .retryOnException(RedisCommandTimeoutException.class::isInstance).build());
 
     CircuitBreakerUtil.registerMetrics(retry, FaultTolerantRedisClusterClient.class);
   }
@@ -133,8 +135,8 @@ public class FaultTolerantRedisClient {
     try {
       circuitBreaker.executeRunnable(() -> retry.executeRunnable(() -> consumer.accept(connection)));
     } catch (final Throwable t) {
-      if (t instanceof RedisException) {
-        throw (RedisException) t;
+      if (t instanceof RedisException err) {
+        throw err;
       } else {
         throw new RedisException(t);
       }
@@ -146,8 +148,8 @@ public class FaultTolerantRedisClient {
     try {
       return circuitBreaker.executeCallable(() -> retry.executeCallable(() -> function.apply(connection)));
     } catch (final Throwable t) {
-      if (t instanceof RedisException) {
-        throw (RedisException) t;
+      if (t instanceof RedisException err) {
+        throw err;
       } else {
         throw new RedisException(t);
       }

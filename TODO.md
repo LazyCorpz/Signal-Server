@@ -1,11 +1,16 @@
 # TODOs
 
+Note that "dropping support" means mocking APIs with no-ops,
+so as to not break clients, and also to ease integration.
+
 ## Planned Changes
 
 This list is obviously incomplete, and these details are subject to change.
 This list is roughly in chronologcal order.
 (I.e, the last change depends on all or most before it)
 
+- Optimize Dockerfile dependency installation with a cache mount
+- Integration tests for the service module, and possibly all others
 - Create Redis cluster for integration testing
 - Support [Android][signal-android] clients,
   because Signal will not let you create an account on desktop.
