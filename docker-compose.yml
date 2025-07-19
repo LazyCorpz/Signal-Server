@@ -48,15 +48,8 @@ services:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'integration-tests'
-    # command: '-Dsecrets.bundle.filename=config/test-secrets-bundle.yml'
     environment:
       - 'REDIS_SERVER_ADDRESS=127.0.0.1'
-      - 'SIGNAL_SERVER_CONFIG=config/test.yml'
-    secrets:
-      - source: 'signal-server-testing-config'
-        target: '/usr/app/service/config/test.yml'
-      - source: 'signal-server-testing-bundle'
-        target: '/usr/app/config/test-secrets-bundle.yml'
     networks:
       'signal-server':
 secrets:
@@ -64,10 +57,6 @@ secrets:
     file: './service/config/production.yml'
   'signal-server-production-bundle':
     file: './config/production-secrets-bundle.yml'
-  'signal-server-testing-config':
-    file: './service/config/test.yml'
-  'signal-server-testing-bundle':
-    file: './config/test-secrets-bundle.yml'
 networks:
   'signal-server':
     driver: 'bridge'

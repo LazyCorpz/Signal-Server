@@ -57,7 +57,6 @@ COPY --from=api-doc [ "/root/.m2/", "/root/.m2/" ]
 COPY --from=api-doc [ "/usr/app/", "./" ]
 COPY [ "./", "./" ]
 
-# Installation requires mounted secrets
 ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server", "-q" ]
 
 # Packaging and running project JAR file
