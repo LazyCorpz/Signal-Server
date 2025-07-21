@@ -9,5 +9,6 @@ or modify these files under this project's own [license](./LICENSE).
 - [maven-wrapper.properties](./.mvn/wrapper/maven-wrapper.properties)
 - [mvnw](./mvnw)
 - [mvnw.cmd](./mvnw.cmd)
+- [mvnw.ps1](./mvnw.ps1)
 
 [apache-2.0]: https://www.apache.org/licenses/LICENSE-2.0
