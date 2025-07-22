@@ -42,4 +42,9 @@ Copyright 2013 Signal Messenger, LLC
 
 Licensed under the GNU AGPLv3: <https://www.gnu.org/licenses/agpl-3.0.html>
 
+Copyright Notices
+-------
+
+See: [NOTICE.md](./NOTICE.md)
+
 [community forum]: https://community.signalusers.org
