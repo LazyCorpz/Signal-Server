@@ -28,6 +28,9 @@ COPY --from=dependencies [ "/usr/app/", "./" ]
 COPY [ "./websocket-resources/", "./websocket-resources/" ]
 RUN [ "./mvnw", "install", "-pl", ":websocket-resources", "-am", "-q" ]
 
+# For testing purposes, we can keep the container running
+ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+
 # Building service module
 FROM ${JDK_VERSION} AS service
 
@@ -39,6 +42,9 @@ COPY [ "./spam-filter/", "./spam-filter/" ]
 
 RUN [ "./mvnw", "install", "-pl", ":service", "-am", "-q" ]
 
+# For testing purposes, we can keep the container running
+ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+
 # Building api-doc module
 FROM ${JDK_VERSION} AS api-doc
 
@@ -48,6 +54,9 @@ COPY --from=service [ "/usr/app/", "./" ]
 COPY [ "./api-doc/", "./api-doc/" ]
 
 RUN [ "./mvnw", "install", "-pl", ":api-doc", "-am", "-q" ]
+
+# For testing purposes, we can keep the container running
+ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 
 # Building and running integration tests
 FROM ${JDK_VERSION} AS integration-tests
