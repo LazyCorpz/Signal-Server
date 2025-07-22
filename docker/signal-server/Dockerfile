@@ -16,6 +16,9 @@ COPY [ "./integration-tests/pom.xml", "./integration-tests/pom.xml" ]
 
 RUN [ "./mvnw", "dependency:go-offline", "-U", "-q" ]
 
+# For testing purposes, we can keep the container running
+ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+
 # Building websocket-resources module
 FROM ${JDK_VERSION} AS websocket-resources
 
@@ -24,9 +27,6 @@ COPY --from=dependencies [ "/root/.m2/", "/root/.m2/" ]
 COPY --from=dependencies [ "/usr/app/", "./" ]
 COPY [ "./websocket-resources/", "./websocket-resources/" ]
 RUN [ "./mvnw", "install", "-pl", ":websocket-resources", "-am", "-q" ]
-
-# For testing purposes, we can keep the container running
-ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 
 # Building service module
 FROM ${JDK_VERSION} AS service
