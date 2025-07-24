@@ -1,0 +1,27 @@
+{
+    "name": "signal-server_",
+    "version": "0.0.0",
+    "private": true,
+    "license": "AGPL-3.0-only",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node --run=start:prod",
+        "start:prod": "docker compose --profile=prod up -d",
+        "start:dev": "docker compose --profile=dev --profile=debug up -d",
+        "start:debug": "docker compose --profile=debug up -d",
+        "mongosh": "node --env-file=\"./docker/mongo/debug/.env\" -r ts-node/register \"./docker/mongo/debug/mongosh.ts\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/LazyCorpz/Signal-Server.git"
+    },
+    "workspaces": {
+        "packages": [
+            "./docker/mongo"
+        ]
+    },
+    "devDependencies": {
+        "ts-node": "^10.9.2",
+        "tslib": "^2.8.1"
+    }
+}

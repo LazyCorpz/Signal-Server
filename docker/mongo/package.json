@@ -1,0 +1,11 @@
+{
+    "name": "mongo_",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "@types/node": "^24.1.0"
+    }
+}

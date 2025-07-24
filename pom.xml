@@ -63,7 +63,9 @@
     <logstash.logback.version>7.3</logstash.logback.version>
     <log4j-bom.version>2.24.3</log4j-bom.version>
     <luajava.version>3.5.0</luajava.version>
+    <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
     <micrometer.version>1.14.5</micrometer.version>
+    <mongodb-driver-bom.version>5.5.1</mongodb-driver-bom.version>
     <netty.version>4.1.119.Final</netty.version>
     <!-- Must be less than or equal to the value from Google libraries-bom which controls the protobuf runtime version.
     See https://protobuf.dev/support/cross-version-runtime-guarantee/. -->
@@ -90,6 +92,17 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- MongoDB -->
+      <dependency>
+        <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-bom</artifactId>
+        <version>${mongodb-driver-bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Signal Server -->
       <dependency>
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
@@ -311,10 +324,32 @@
         <artifactId>logback-access-common</artifactId>
         <version>${logback-access.version}</version>
       </dependency>
+
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
+
+    <!-- MongoDB -->
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-reactivestreams</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams</artifactId>
+    </dependency>
+
+    <!-- Signal Server -->
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
@@ -388,6 +423,8 @@
     </extensions>
     <pluginManagement>
       <plugins>
+
+        <!-- Signal Server -->
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>jib-maven-plugin</artifactId>
@@ -411,7 +448,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>${maven-shade-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -552,6 +589,28 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
+      <!-- MongoDB (breaks api-doc)
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${maven-shade-plugin.version}</version>
+          <executions>
+              <execution>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>shade</goal>
+                  </goals>
+                  <configuration>
+                      <transformers>
+                          <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                              <mainClass>${project.groupId}.Main</mainClass>
+                          </transformer>
+                      </transformers>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin> -->
 
     </plugins>
   </build>

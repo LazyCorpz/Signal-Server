@@ -8,6 +8,18 @@ Looking for protocol documentation? Check out the website!
 
 <https://signal.org/docs/>
 
+Configuring
+-----------
+
+- Rename [`.env.example`](./docker/mongo/.env.example) of `mongo` to `.env`.
+  For your server's security, please change the credentials.
+- Rename [`.env.example`](./docker/mongo/debug/.env.example) of `mongo-debug` to `.env`.
+  For your server's security, please change the credentials according to the mongo `.env` file.
+- Rename [`sample.yml`](./service/config/sample.yml) to `config.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
+- Rename [`sample-secrets-bundle.yml`](./service/config/sample-secrets-bundle.yml) to `secrets-bundle.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
+
 How to Build
 ------------
 

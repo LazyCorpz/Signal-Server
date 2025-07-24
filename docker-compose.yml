@@ -1,7 +1,7 @@
 # We use the reserved private subnet 10.0.0.0/8 (::ffff:a00:0/104)
 # https://en.wikipedia.org/wiki/Reserved_IP_addresses
 services:
-  'signal-server-prod':
+  'signal-server':
     container_name: 'signal-server'
     profiles:
       - 'prod'
@@ -9,54 +9,71 @@ services:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'run'
-    command: '-Dsecrets.bundle.filename=config/production-secrets-bundle.yml'
+    command: '-Dsecrets.bundle.filename=config/test-secrets-bundle.yml'
+    env_file:
+      - './docker/signal-server/.env'
     environment:
-      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
-      - 'SIGNAL_SERVER_CONFIG=config/production.yml'
+      - 'SIGNAL_SERVER_CONFIG=config/test.yml'
     secrets:
-      - source: 'signal-server-production-config'
-        target: '/usr/app/service/config/production.yml'
-      - source: 'signal-server-production-bundle'
-        target: '/usr/app/config/production-secrets-bundle.yml'
+      - source: 'signal-server-secrets'
+        target: '/usr/app/service/config/'
     networks:
       'signal-server':
-  'signal-server-prod-testing':
+      'mongo':
+  'signal-server-testing':
     container_name: 'signal-server'
     profiles:
-      - 'prod'
-      - 'test'
-    build:
-      context: '.'
-      dockerfile: './docker/signal-server/Dockerfile'
-      target: 'integration-tests'
-    command: '-Dsecrets.bundle.filename=config/production-secrets-bundle.yml'
-    environment:
-      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
-      - 'SIGNAL_SERVER_CONFIG=config/production.yml'
-    secrets:
-      - source: 'signal-server-production-config'
-        target: '/usr/app/service/config/production.yml'
-      - source: 'signal-server-production-bundle'
-        target: '/usr/app/config/production-secrets-bundle.yml'
-    networks:
-      'signal-server':
-  'signal-server-dev-testing':
-    profiles:
       - 'dev'
-      - 'test'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'integration-tests'
-    environment:
-      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
+    env_file:
+      - './docker/signal-server/.env'
+    secrets:
+      - source: 'signal-server-secrets'
+        target: '/usr/app/service/config/'
     networks:
       'signal-server':
+      'mongo':
+  'mongo':
+    container_name: 'signal-mongo'
+    restart: 'on-failure'
+    mem_swappiness: 1 # Doesn't affect /proc/sys/vm/swappiness, so mongosh still gives a warning
+    build:
+      context: './docker/mongo'
+      dockerfile: './Dockerfile'
+      target: 'run'
+    volumes:
+      - 'signal-mongodb:/data/db'
+      - 'signal-mongodb-config:/data/configdb'
+    env_file:
+      - './docker/mongo/.env'
+    networks:
+      'mongo':
+  'mongo-debug':
+    restart: 'on-failure'
+    depends_on:
+      - 'mongo'
+    profiles:
+      - 'debug'
+    image: 'mongo-express:1.0.2'
+    ports:
+      - ':8081'
+    env_file:
+      - './docker/mongo/debug/.env'
+    environment:
+      # Theme demo:
+      # https://codemirror.com/5/demo/theme.html#tomorrow-night-bright
+      ME_CONFIG_OPTIONS_EDITORTHEME: 'tomorrow-night-bright'
+    networks:
+      'mongo':
+volumes:
+  'signal-mongodb':
+  'signal-mongodb-config':
 secrets:
-  'signal-server-production-config':
-    file: './service/config/production.yml'
-  'signal-server-production-bundle':
-    file: './config/production-secrets-bundle.yml'
+  'signal-server-secrets':
+    file: './service/config/'
 networks:
   'signal-server':
     driver: 'bridge'
@@ -66,3 +83,11 @@ networks:
       config:
         - subnet: '10.0.0.0/24' # 10.0.0.X
           gateway: '10.0.0.1'
+  'mongo':
+    driver: 'bridge'
+    enable_ipv4: true
+    enable_ipv6: false
+    ipam:
+      config:
+        - subnet: '10.0.1.0/24' # 10.0.1.X
+          gateway: '10.0.1.1'
