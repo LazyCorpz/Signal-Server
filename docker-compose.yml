@@ -2,7 +2,7 @@
 # https://en.wikipedia.org/wiki/Reserved_IP_addresses
 services:
   'signal-server':
-    container_name: 'signal-server'
+    container_name: 'signal-server' # Run only testing or prod, never both
     profiles:
       - 'prod'
     build:
@@ -21,7 +21,7 @@ services:
       'signal-server':
       'mongo':
   'signal-server-testing':
-    container_name: 'signal-server'
+    container_name: 'signal-server' # Run only testing or prod, never both
     profiles:
       - 'dev'
     build:
@@ -78,7 +78,7 @@ networks:
   'signal-server':
     driver: 'bridge'
     enable_ipv4: true
-    enable_ipv6: false
+    enable_ipv6: true
     ipam:
       config:
         - subnet: '10.0.0.0/24' # 10.0.0.X
