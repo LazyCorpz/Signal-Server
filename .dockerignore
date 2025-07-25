@@ -28,6 +28,11 @@ deployer.log
 .git
 .mvn/wrapper/maven-wrapper.jar
 **/*.old
+**/.env*
+# !**/.env.example
+**/node_modules
+**/tmp
+**/temp
 
 # Docker ignore files
 **/.classpath
