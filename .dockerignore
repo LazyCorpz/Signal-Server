@@ -31,6 +31,8 @@ deployer.log
 **/.env*
 # !**/.env.example
 **/node_modules
+**/tmp
+**/temp
 
 # Docker ignore files
 **/.classpath

@@ -30,3 +30,5 @@ deployer.log
 **/.env*
 !**/.env.example
 **/node_modules
+**/tmp
+**/temp
