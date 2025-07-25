@@ -41,6 +41,8 @@ Note that these are not necessarily planned changes,
 but rather an incomplete list of problems and possible solutions.
 These changes have yet to be reviewed, and are thus subject to change.
 
+- Migrate YAML configuration files to environment variables to simplify
+  multi-stage Docker builds with mounted secrets
 - Migrate AWS S3/CDN to MongoDB with [GridFS](https://www.mongodb.com/docs/manual/core/gridfs)
 - Migrate all other functionally required external integration services
   to containerized equivalents for self-hosting, if possible
@@ -61,10 +63,10 @@ These changes have yet to be reviewed, and are thus subject to change.
     More so than sideloading unverified apps in general.
   - Modify Signal to not require creating an account on a mobile device.
     Since PQXDH may require some PID to verify a message exchange upon
-    the initial handshake, for security reasons, this may be best left alone,
-    which is why Android support is currently in the
+    the initial handshake, for security reasons, this may be best left alone.
+    This is why Android support is currently in the
     [Planned Changes](#planned-changes) phase.
 
-<!-- [signal-android]: https://github.com/lazycorpz/signal-android -->
-[signal-android]: https://github.com/signalapp/signal-android
-[signal-desktop]: https://github.com/lazycorpz/signal-desktop
+<!-- [signal-android]: https://github.com/LazyCorpz/Signal-Android -->
+[signal-android]: https://github.com/signalapp/Signal-Android
+[signal-desktop]: https://github.com/LazyCorpz/Signal-Desktop

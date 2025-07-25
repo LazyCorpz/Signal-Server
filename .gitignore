@@ -32,3 +32,6 @@ deployer.log
 **/node_modules
 **/tmp
 **/temp
+**/*.tmp
+**/*.temp
+.vscode
