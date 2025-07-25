@@ -14,7 +14,8 @@ This list is roughly in chronologcal order.
 - Integration tests for the service module, and possibly all others
 - Create Redis cluster for integration testing
 - Support [Android][signal-android] clients,
-  because Signal will not let you create an account on desktop.
+  because Signal accounts must be created on mobile,
+  as per their account security mechanisms.
 - Support [Desktop][signal-desktop] clients
 <!--
 - Add to Dockerfile command: (from [pom.xml](./service/pom.xml))
@@ -61,11 +62,6 @@ These changes have yet to be reviewed, and are thus subject to change.
     to sideload apps not published to the Apple App Store,
     which is an inherently insecure practice that cannot be recommended.
     More so than sideloading unverified apps in general.
-  - Modify Signal to not require creating an account on a mobile device.
-    Since PQXDH may require some PID to verify a message exchange upon
-    the initial handshake, for security reasons, this may be best left alone.
-    This is why Android support is currently in the
-    [Planned Changes](#planned-changes) phase.
 
 <!-- [signal-android]: https://github.com/LazyCorpz/Signal-Android -->
 [signal-android]: https://github.com/signalapp/Signal-Android
