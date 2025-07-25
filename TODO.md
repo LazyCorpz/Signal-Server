@@ -17,24 +17,6 @@ This list is roughly in chronologcal order.
   because Signal accounts must be created on mobile,
   as per their account security mechanisms.
 - Support [Desktop][signal-desktop] clients
-<!--
-- Add to Dockerfile command: (from [pom.xml](./service/pom.xml))
-
-  ```xml
-  <jvmFlags>
-    <jvmFlag>-server</jvmFlag>
-    <jvmFlag>-Djava.awt.headless=true</jvmFlag>
-    <jvmFlag>-Djdk.nio.maxCachedBufferSize=262144</jvmFlag>
-    <jvmFlag>-Dlog4j2.formatMsgNoLookups=true</jvmFlag>
-    <jvmFlag>-XX:MaxRAMPercentage=75</jvmFlag>
-    <jvmFlag>-XX:+HeapDumpOnOutOfMemoryError</jvmFlag>
-    <jvmFlag>-XX:HeapDumpPath=/tmp/heapdump.bin</jvmFlag>
-  </jvmFlags>
-  <ports>
-    <port>8080</port>
-  </ports>
-  ```
--->
 
 ## Possible changes
 
@@ -52,16 +34,29 @@ These changes have yet to be reviewed, and are thus subject to change.
   - Braintree
   - Google Play
   - Apple App Store
-  - Consequently, badges will be unused, and thus, should also be removed,
-    unless a developer badge exists, or is wanted.
-  - Consequently, paid backup tier permissions should be allowed
-    based on a new config flag. See:
-    [the backup system](https://deepwiki.com/signalapp/Signal-Server/7-backup-system)
-    and [SubscriptionConfiguration.java](./service/src/main/java/org/whispersystems/textsecuregcm/configuration/SubscriptionConfiguration.java)
   - Drop support for iOS clients, because third-party apps are required
     to sideload apps not published to the Apple App Store,
     which is an inherently insecure practice that cannot be recommended.
     More so than sideloading unverified apps in general.
+<!--
+  - Add args to [Dockerfile](./docker/signal-server/Dockerfile) command:
+    (from [pom.xml](./service/pom.xml))
+
+    ```xml
+    <jvmFlags>
+      <jvmFlag>-server</jvmFlag>
+      <jvmFlag>-Djava.awt.headless=true</jvmFlag>
+      <jvmFlag>-Djdk.nio.maxCachedBufferSize=262144</jvmFlag>
+      <jvmFlag>-Dlog4j2.formatMsgNoLookups=true</jvmFlag>
+      <jvmFlag>-XX:MaxRAMPercentage=75</jvmFlag>
+      <jvmFlag>-XX:+HeapDumpOnOutOfMemoryError</jvmFlag>
+      <jvmFlag>-XX:HeapDumpPath=/tmp/heapdump.bin</jvmFlag>
+    </jvmFlags>
+    <ports>
+      <port>8080</port>
+    </ports>
+    ```
+-->
 
 <!-- [signal-android]: https://github.com/LazyCorpz/Signal-Android -->
 [signal-android]: https://github.com/signalapp/Signal-Android
