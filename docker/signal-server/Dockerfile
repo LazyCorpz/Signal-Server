@@ -16,10 +16,7 @@ COPY [ "./integration-tests/pom.xml", "./integration-tests/pom.xml" ]
 
 RUN [ "./mvnw", "dependency:go-offline", "-U", "-q" ]
 
-# For testing purposes, we can keep the container running
-ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-
-# Building websocket-resources module
+# Building and testing websocket-resources module
 FROM ${JDK_VERSION} AS websocket-resources
 
 WORKDIR /usr/app
@@ -28,10 +25,7 @@ COPY --from=dependencies [ "/usr/app/", "./" ]
 COPY [ "./websocket-resources/", "./websocket-resources/" ]
 RUN [ "./mvnw", "install", "-pl", ":websocket-resources", "-am", "-q" ]
 
-# For testing purposes, we can keep the container running
-ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-
-# Building service module
+# Building and testing service module
 FROM ${JDK_VERSION} AS service
 
 WORKDIR /usr/app
@@ -42,10 +36,7 @@ COPY [ "./spam-filter/", "./spam-filter/" ]
 
 RUN [ "./mvnw", "install", "-pl", ":service", "-am", "-q" ]
 
-# For testing purposes, we can keep the container running
-ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-
-# Building api-doc module
+# Building and testing api-doc module
 FROM ${JDK_VERSION} AS api-doc
 
 WORKDIR /usr/app
@@ -55,9 +46,6 @@ COPY [ "./api-doc/", "./api-doc/" ]
 
 RUN [ "./mvnw", "install", "-pl", ":api-doc", "-am", "-q" ]
 
-# For testing purposes, we can keep the container running
-ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-
 # Building and running integration tests
 FROM ${JDK_VERSION} AS integration-tests
 
@@ -66,15 +54,27 @@ COPY --from=api-doc [ "/root/.m2/", "/root/.m2/" ]
 COPY --from=api-doc [ "/usr/app/", "./" ]
 COPY [ "./", "./" ]
 
-ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server", "-q" ]
+ENTRYPOINT [ "./mvnw", "install", "-pl", ":integration-tests", "-am", "-q" ]
 
-# Packaging and running project JAR file
-FROM ${JDK_VERSION} AS run
+# Running test server
+FROM ${JDK_VERSION} AS test-server
 
 WORKDIR /usr/app
 COPY --from=integration-tests [ "/root/.m2/", "/root/.m2/" ]
 COPY --from=integration-tests [ "/usr/app/", "./" ]
+
+ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server", "-q" ]
+EXPOSE 8080-8081
+
+# Packaging and running project JAR file without running tests
+FROM ${JDK_VERSION} AS run
+
+WORKDIR /usr/app
+COPY --from=dependencies [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=dependencies [ "/usr/app/", "./" ]
 COPY [ "./docker/signal-server/docker-entrypoint.sh", "./docker-entrypoint.sh" ]
 
-# CMD args are passed to both Maven and JVM
+# CMD args are passed to both Maven and JVM,
+# which install and run the server, respectively
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
+EXPOSE 8080-8081

@@ -2,14 +2,19 @@
 # https://en.wikipedia.org/wiki/Reserved_IP_addresses
 services:
   'signal-server':
-    container_name: 'signal-server' # Run only testing or prod, never both
+    container_name: 'signal-server' # Run only one server instance at a time
     profiles:
       - 'prod'
+    depends_on:
+      - 'mongo'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'run'
     command: '-Dsecrets.bundle.filename=config/test-secrets-bundle.yml'
+    ports:
+      - '8080:8080' # Application
+      - ':8081'     # Admin
     env_file:
       - './docker/signal-server/.env'
     environment:
@@ -20,14 +25,20 @@ services:
     networks:
       'signal-server':
       'mongo':
-  'signal-server-testing':
-    container_name: 'signal-server' # Run only testing or prod, never both
+  'signal-test-server':
+    container_name: 'signal-server' # Run only one server instance at a time
     profiles:
-      - 'dev'
+      - 'staging'
+    depends_on:
+      - 'mongo'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'integration-tests'
+    command: '-DskipTests=true'
+    ports:
+      - '8080:8080' # Application
+      - ':8081'     # Admin
     env_file:
       - './docker/signal-server/.env'
     secrets:
@@ -36,6 +47,16 @@ services:
     networks:
       'signal-server':
       'mongo':
+  'signal-server-tests':
+    container_name: 'signal-server' # Run only one server instance at a time
+    profiles:
+      - 'dev'
+    build:
+      context: '.'
+      dockerfile: './docker/signal-server/Dockerfile'
+      target: 'integration-tests'
+    networks:
+      'signal-server':
   'mongo':
     container_name: 'signal-mongo'
     restart: 'on-failure'
