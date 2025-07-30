@@ -1,17 +1,16 @@
 package org.whispersystems.textsecuregcm.grpc.net.client;
 
+import org.whispersystems.textsecuregcm.grpc.net.NoiseHandshakeException;
+import org.whispersystems.textsecuregcm.grpc.net.NoiseTunnelProtos;
+
 import com.google.protobuf.InvalidProtocolBufferException;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import java.util.Optional;
-import org.whispersystems.textsecuregcm.grpc.net.NoiseHandshakeException;
-import org.whispersystems.textsecuregcm.grpc.net.NoiseTunnelProtos;
-import org.whispersystems.textsecuregcm.grpc.net.OutboundCloseErrorMessage;
 
 public class NoiseClientHandshakeHandler extends ChannelDuplexHandler {
 

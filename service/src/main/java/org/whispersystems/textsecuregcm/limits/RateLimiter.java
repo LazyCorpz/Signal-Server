@@ -7,8 +7,9 @@ package org.whispersystems.textsecuregcm.limits;
 
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
+
 import org.whispersystems.textsecuregcm.controllers.RateLimitExceededException;
-import org.whispersystems.textsecuregcm.util.ExceptionUtils;
+
 import reactor.core.publisher.Mono;
 
 public interface RateLimiter {

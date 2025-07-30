@@ -6,8 +6,6 @@ package org.whispersystems.textsecuregcm.grpc.net.client;
 
 import org.whispersystems.textsecuregcm.grpc.net.NoiseTunnelProtos;
 
-import java.util.Optional;
-
 /**
  * A netty user event that indicates that the noise handshake finished successfully.
  *

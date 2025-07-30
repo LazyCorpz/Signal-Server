@@ -33,7 +33,9 @@ public class ServerInterceptorUtil {
   public static <ReqT, RespT> ServerCall.Listener<ReqT> closeWithStatus(final ServerCall<ReqT, RespT> call, final Status status) {
     call.close(status, EMPTY_TRAILERS);
 
-    //noinspection unchecked
-    return NO_OP_LISTENER;
+    @SuppressWarnings("unchecked")
+    final ServerCall.Listener<ReqT> noopListener = NO_OP_LISTENER;
+
+    return noopListener;
   }
 }

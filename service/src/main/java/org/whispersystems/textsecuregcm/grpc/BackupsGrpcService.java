@@ -4,14 +4,10 @@
  */
 package org.whispersystems.textsecuregcm.grpc;
 
-import com.google.protobuf.ByteString;
-import io.grpc.Status;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
+
 import org.signal.chat.backup.GetBackupAuthCredentialsRequest;
 import org.signal.chat.backup.GetBackupAuthCredentialsResponse;
 import org.signal.chat.backup.ReactorBackupsGrpc;
@@ -27,14 +23,16 @@ import org.signal.libsignal.zkgroup.receipts.ReceiptCredentialPresentation;
 import org.whispersystems.textsecuregcm.auth.grpc.AuthenticatedDevice;
 import org.whispersystems.textsecuregcm.auth.grpc.AuthenticationUtil;
 import org.whispersystems.textsecuregcm.backup.BackupAuthManager;
-import org.whispersystems.textsecuregcm.controllers.ArchiveController;
 import org.whispersystems.textsecuregcm.metrics.BackupMetrics;
 import org.whispersystems.textsecuregcm.metrics.UserAgentTagUtil;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.AccountsManager;
-import reactor.core.publisher.Mono;
 
-import static org.whispersystems.textsecuregcm.metrics.MetricsUtil.name;
+import com.google.protobuf.ByteString;
+
+import io.grpc.Status;
+import io.micrometer.core.instrument.Tag;
+import reactor.core.publisher.Mono;
 
 public class BackupsGrpcService extends ReactorBackupsGrpc.BackupsImplBase {
 
@@ -66,6 +64,7 @@ public class BackupsGrpcService extends ReactorBackupsGrpc.BackupsImplBase {
         .thenReturn(SetBackupIdResponse.getDefaultInstance());
   }
 
+  @Override
   public Mono<RedeemReceiptResponse> redeemReceipt(RedeemReceiptRequest request) {
     final ReceiptCredentialPresentation receiptCredentialPresentation = deserialize(
         ReceiptCredentialPresentation::new,

@@ -7,9 +7,10 @@ package org.whispersystems.textsecuregcm.entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Random;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
+
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.cartesian.ArgumentSets;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;

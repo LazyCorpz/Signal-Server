@@ -51,7 +51,12 @@ class MessagesCacheRemoveQueueScript {
 
     //noinspection unchecked
     return removeQueueScript.executeBinaryReactive(keys, args)
-        .map(result -> (List<byte[]>) result)
+        .map(result -> {
+          @SuppressWarnings("unchecked")
+          List<byte[]> out = (List<byte[]>) result;
+
+          return out;
+        })
         .next();
   }
 

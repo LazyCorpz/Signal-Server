@@ -37,7 +37,9 @@ class MessagesCacheGetQueuesToPersistScript {
         String.valueOf(limit) // limit
     );
 
-    //noinspection unchecked
-    return (List<String>) getQueuesToPersistScript.execute(keys, args);
+    @SuppressWarnings("unchecked")
+    List<String> out = (List<String>) getQueuesToPersistScript.execute(keys, args);
+    
+    return out;
   }
 }
