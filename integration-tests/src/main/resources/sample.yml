@@ -1,0 +1,18 @@
+# Source: org.signal.integration
+
+domain: 'localhost:8080' # Server domain name
+rootCert: '' # X.509 server certificate
+
+dynamoDbClient:
+  region: 'us-east-1'
+  clientExecutionTimeout: 'P60s' # Timeout duration
+  clientRequestTimeout: 'P60s' # Timeout duration
+  maxConnections: 5
+
+dynamoDbTables:
+  registrationRecovery: '' # Table names
+  verificationSessions: 'VerificationSessionsTest' # Table names
+  phoneNumberIdentifiers: '4a37d1f1-19d2-412e-a687-0677e00c311b' # UUID
+
+prescribedRegistrationNumber: '+11234567890'
+prescribedRegistrationCode: 'abcd'

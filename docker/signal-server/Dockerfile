@@ -52,29 +52,44 @@ FROM ${JDK_VERSION} AS integration-tests
 WORKDIR /usr/app
 COPY --from=api-doc [ "/root/.m2/", "/root/.m2/" ]
 COPY --from=api-doc [ "/usr/app/", "./" ]
-COPY [ "./", "./" ]
+COPY [ "./integration-tests", "./integration-tests" ]
 
-ENTRYPOINT [ "./mvnw", "install", "-pl", ":integration-tests", "-am", "-q" ]
+RUN [ "./mvnw", "install", "-pl", ":integration-tests", "-am", "-Dmaven.test.skip=true", "-q" ]
 
-# Running test server
-FROM ${JDK_VERSION} AS test-server
+# For user readability
+ENTRYPOINT [ "echo", "==================== SUCCESS ====================" ]
+
+# For development purposes, we can rebuild the project without compiling
+# or running tests, allowing for further ease of testing later modules
+FROM ${JDK_VERSION} AS build-without-tests
 
 WORKDIR /usr/app
-COPY --from=integration-tests [ "/root/.m2/", "/root/.m2/" ]
-COPY --from=integration-tests [ "/usr/app/", "./" ]
+COPY --from=dependencies [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=dependencies [ "/usr/app/", "./" ]
+COPY [ "./", "./" ]
 
-ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server", "-q" ]
-EXPOSE 8080-8081
+RUN [ "./mvnw", "install", "-am", "-Dmaven.test.skip=true" ]
+
+# Running test server
+FROM ${JDK_VERSION} AS run-test-server
+
+WORKDIR /usr/app
+COPY --from=build-without-tests [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=build-without-tests [ "/usr/app/", "./" ]
+
+# Requires mounted secrets
+ENTRYPOINT [ "./mvnw", "integration-test", "-Pverify-server-config", "-Ptest-server" ]
+EXPOSE 8080 8081
 
 # Packaging and running project JAR file without running tests
 FROM ${JDK_VERSION} AS run
 
 WORKDIR /usr/app
-COPY --from=dependencies [ "/root/.m2/", "/root/.m2/" ]
-COPY --from=dependencies [ "/usr/app/", "./" ]
-COPY [ "./docker/signal-server/docker-entrypoint.sh", "./docker-entrypoint.sh" ]
+COPY --from=build-without-tests [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=build-without-tests [ "/usr/app/", "./" ]
 
 # CMD args are passed to both Maven and JVM,
 # which install and run the server, respectively
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
-EXPOSE 8080-8081
+CMD [ "-Dsecrets.bundle.filename=config/test-secrets-bundle.yml" ]
+EXPOSE 8080 8081

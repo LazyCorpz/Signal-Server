@@ -62,9 +62,14 @@ deployer.log
 **/secrets.dev.yaml
 **/values.dev.yaml
 **/*.cmd
-**/README.md
+**/*.ps1
+**/package.json
+**/package-lock.json
+**/.nvmrc
+**/tsconfig.json
+**/jsconfig.json
+**/debug
 .editorconfig
 .gitattributes
 .github
 .gitmodules
-docker

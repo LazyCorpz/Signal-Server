@@ -11,10 +11,9 @@ services:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'run'
-    command: '-Dsecrets.bundle.filename=config/test-secrets-bundle.yml'
     ports:
       - '8080:8080' # Application
-      - ':8081'     # Admin
+      - ':8081' # Admin
     env_file:
       - './docker/signal-server/.env'
     environment:
@@ -22,6 +21,8 @@ services:
     secrets:
       - source: 'signal-server-secrets'
         target: '/usr/app/service/config/'
+    sysctls:
+      - 'net.ipv6.conf.all.disable_ipv6=0'
     networks:
       'signal-server':
       'mongo':
@@ -34,11 +35,10 @@ services:
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
-      target: 'integration-tests'
-    command: '-DskipTests=true'
+      target: 'run-test-server'
     ports:
       - '8080:8080' # Application
-      - ':8081'     # Admin
+      - ':8081' # Admin
     env_file:
       - './docker/signal-server/.env'
     secrets:
@@ -48,7 +48,7 @@ services:
       'signal-server':
       'mongo':
   'signal-server-tests':
-    container_name: 'signal-server' # Run only one server instance at a time
+    container_name: 'signal-server-tests' # Run only one test instance at a time
     profiles:
       - 'dev'
     build:
