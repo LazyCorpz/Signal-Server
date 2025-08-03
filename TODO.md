@@ -10,8 +10,7 @@ This list is roughly in chronologcal order.
 (I.e, the last change depends on all or most before it)
 
 - Optimize Dockerfile dependency installation with a cache mount
-- Migrate AWS DynamoDB to MongoDB
-- Integration tests for the service module, and possibly all others
+- Create and integrate AWS DynamoDB container
 - Create Redis cluster for integration testing
 - Support [Android][signal-android] clients,
   because Signal accounts must be created on mobile,
@@ -24,7 +23,6 @@ Note that these are not necessarily planned changes,
 but rather an incomplete list of problems and possible solutions.
 These changes have yet to be reviewed, and are thus subject to change.
 
-- Migrate AWS S3/CDN to MongoDB with [GridFS](https://www.mongodb.com/docs/manual/core/gridfs)
 - Migrate all other functionally required external integration services
   to containerized equivalents for self-hosting, if possible
 - Drop support for paid services:
