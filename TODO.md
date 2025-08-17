@@ -10,8 +10,8 @@ This list is roughly in chronologcal order.
 (I.e, the last change depends on all or most before it)
 
 - Optimize Dockerfile dependency installation with a cache mount
-- Create and integrate AWS DynamoDB container
 - Create Redis cluster for integration testing
+- Create and integrate AWS DynamoDB container
 - Support [Android][signal-android] clients,
   because Signal accounts must be created on mobile,
   as per their account security mechanisms.
@@ -34,28 +34,6 @@ These changes have yet to be reviewed, and are thus subject to change.
     to sideload apps not published to the Apple App Store,
     which is an inherently insecure practice that cannot be recommended.
     More so than sideloading unverified apps in general.
-- Migrate YAML configuration files to environment variables to simplify
-  multi-stage Docker builds with mounted secrets
-<!--
-  - Add args to [Dockerfile](./docker/signal-server/Dockerfile) command:
-    (from [pom.xml](./service/pom.xml))
 
-    ```xml
-    <jvmFlags>
-      <jvmFlag>-server</jvmFlag>
-      <jvmFlag>-Djava.awt.headless=true</jvmFlag>
-      <jvmFlag>-Djdk.nio.maxCachedBufferSize=262144</jvmFlag>
-      <jvmFlag>-Dlog4j2.formatMsgNoLookups=true</jvmFlag>
-      <jvmFlag>-XX:MaxRAMPercentage=75</jvmFlag>
-      <jvmFlag>-XX:+HeapDumpOnOutOfMemoryError</jvmFlag>
-      <jvmFlag>-XX:HeapDumpPath=/tmp/heapdump.bin</jvmFlag>
-    </jvmFlags>
-    <ports>
-      <port>8080</port>
-    </ports>
-    ```
--->
-
-<!-- [signal-android]: https://github.com/LazyCorpz/Signal-Android -->
-[signal-android]: https://github.com/signalapp/Signal-Android
+[signal-android]: https://github.com/Vessel9817/Signal-Android
 [signal-desktop]: https://github.com/LazyCorpz/Signal-Desktop

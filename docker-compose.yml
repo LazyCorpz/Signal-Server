@@ -4,7 +4,6 @@ services:
   'signal':
     container_name: 'server'
     depends_on:
-      # - 'dynamodb'
       - 'metrics-adapter'
     build:
       context: '.'
@@ -28,7 +27,6 @@ services:
     profiles:
       - 'staging'
     depends_on:
-      # - 'dynamodb'
       - 'metrics-adapter'
     build:
       context: '.'
@@ -51,17 +49,6 @@ services:
     networks:
       'signal':
         ipv4_address: '10.0.0.254'
-  'dynamodb':
-    container_name: 'dynamodb'
-    image: 'amazon/dynamodb-local:3.0.0'
-    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath ./data'
-    working_dir: '/home/dynamodblocal'
-    ports:
-      - ':8000'
-    volumes:
-      - type: 'volume'
-        source: 'dynamodb'
-        target: '/home/dynamodblocal/data'
   'metrics':
     container_name: 'metrics'
     image: 'prom/prometheus:v3.5.0'
@@ -88,7 +75,6 @@ services:
       'signal':
         ipv4_address: '10.0.0.4'
 volumes:
-  'dynamodb':
   'metrics':
 secrets:
   'signal':
