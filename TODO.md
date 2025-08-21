@@ -9,7 +9,8 @@ This list is obviously incomplete, and these details are subject to change.
 This list is roughly in chronologcal order.
 (I.e, the last change depends on all or most before it)
 
-- Don't share configurations between production and development
+- Use TLS certificates with Redis (i.e, `rediss://localhost:PORT/`)
+- Don't share Signal-Server configurations between production and development
 - Password-protect Redis clusters
 - Create and integrate AWS DynamoDB container
 - Support [Android][signal-android] clients,
@@ -36,8 +37,6 @@ These changes have yet to be reviewed, and are thus subject to change.
     to sideload apps not published to the Apple App Store,
     which is an inherently insecure practice that cannot be recommended.
     More so than sideloading unverified apps in general.
-- Migrate Redis nodes to node clusters (as originally intended)
-  to make use of replica sets, backed by network isolation
 
 [signal-android]: https://github.com/Vessel9817/Signal-Android
 [signal-desktop]: https://github.com/LazyCorpz/Signal-Desktop
