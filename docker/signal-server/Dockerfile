@@ -9,7 +9,7 @@ WORKDIR /usr/app/
 COPY [ "./README.md", "TESTING.md", "./LICENSE", "./NOTICE.md", "./" ]
 
 # Used to assert that licensing info is indeed copied
-ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+ENTRYPOINT [ "ls" ]
 
 # Installing dependencies
 FROM ${JDK_VERSION} AS dependencies
@@ -87,11 +87,11 @@ RUN [ "./mvnw", "install", "-am", "-Dmaven.test.skip=true", "-q" ]
 FROM ${JDK_VERSION} AS run-test-server
 
 WORKDIR /usr/app/
-COPY --from=integration-tests [ "/root/.m2/", "/root/.m2/" ]
-COPY --from=integration-tests [ "/usr/app/", "./" ]
+COPY --from=build-without-tests [ "/root/.m2/", "/root/.m2/" ]
+COPY --from=build-without-tests [ "/usr/app/", "./" ]
 COPY --from=notices [ "/usr/app/", "./" ]
 
-# Requires mounted secrets
+# Tests require mounted secrets
 # ENTRYPOINT [ "./mvnw", "integration-test", "-Pverify-server-config", "-Ptest-server" ]
 ENTRYPOINT [ "./mvnw", "integration-test", "-Ptest-server" ]
 EXPOSE 8080 8081

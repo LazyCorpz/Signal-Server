@@ -1,69 +1,70 @@
 # We use the reserved private subnet 10.0.0.0/8 (::ffff:a00:0/104)
 # https://en.wikipedia.org/wiki/Reserved_IP_addresses
 services:
-  'signal':
-    container_name: 'server'
+  'server-prod': # Signal server
+    container_name: 'server' # Same name to disallow sharing containers
+    profiles:
+      - 'prod'
     depends_on:
       - 'metrics-adapter'
+      - 'redis-cache-cluster'
+      - 'redis-push-scheduler-cluster'
+      - 'redis-rate-limiters-cluster'
+      - 'redis-message-cache-cluster'
+    restart: 'on-failure' # Server has built-in health checks
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'run'
-    ports:
-      - ':8080' # Application
-      - ':8081' # Admin
+    # ports:
+    #   - ':8080' # Application
+    #   - ':8081' # Admin
     environment:
       - 'SIGNAL_SERVER_CONFIG=config/test.yml'
     secrets:
       - source: 'signal'
         target: '/usr/app/service/config/'
-    sysctls:
-      - 'net.ipv6.conf.all.disable_ipv6=0'
-    networks:
-      'signal':
-        ipv4_address: '10.0.0.2'
-  'test-server':
-    container_name: 'test-server'
+    # sysctls:
+    #   - 'net.ipv6.conf.all.disable_ipv6=0'
+    network_mode: 'host'
+  'server-dev': # Signal server
+    container_name: 'server' # Same name to disallow sharing containers
     profiles:
-      - 'staging'
+      - 'dev'
     depends_on:
       - 'metrics-adapter'
+      - 'redis-cache-cluster'
+      - 'redis-push-scheduler-cluster'
+      - 'redis-rate-limiters-cluster'
+      - 'redis-message-cache-cluster'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'run-test-server'
+    # ports:
+    #   - ':8080' # Application
+    #   - ':8081' # Admin
     secrets:
       - source: 'signal'
         target: '/usr/app/service/config/'
-    networks:
-      'signal':
-        ipv4_address: '10.0.0.253'
-  'tests':
-    container_name: 'tests'
-    profiles:
-      - 'dev'
-    build:
-      context: '.'
-      dockerfile: './docker/signal-server/Dockerfile'
-      target: 'integration-tests'
-    networks:
-      'signal':
-        ipv4_address: '10.0.0.254'
+      - source: 'test'
+        target: '/usr/app/service/src/test/resources/config/'
+    # sysctls:
+    #   - 'net.ipv6.conf.all.disable_ipv6=0'
+    network_mode: 'host'
   'metrics':
     container_name: 'metrics'
     image: 'prom/prometheus:v3.5.0'
-    ports:
-      - ':9090'
+    # ports:
+    #   - ':9090'
     volumes:
       - type: 'bind'
         source: './docker/metrics/'
         target: '/etc/prometheus/'
       - type: 'volume'
         source: 'metrics'
-        target: '/prometheus'
-    networks:
-      'signal':
-        ipv4_address: '10.0.0.3'
+        target: '/prometheus/'
+    network_mode: 'host'
   'metrics-adapter':
     container_name: 'metrics-adapter'
     image: 'prom/statsd-exporter:v0.28.0'
@@ -71,20 +72,431 @@ services:
       'metrics':
         required: false
         condition: 'service_started'
-    networks:
-      'signal':
-        ipv4_address: '10.0.0.4'
+    network_mode: 'service:metrics'
+  'redis-cache-cluster':
+    container_name: 'redis-cache-cluster'
+    depends_on:
+      - 'redis-cache-1'
+      - 'redis-cache-2'
+      - 'redis-cache-3'
+      - 'redis-cache-4'
+      - 'redis-cache-5'
+      - 'redis-cache-6'
+    build:
+      context: './docker/redis/'
+      dockerfile: './cluster.dockerfile'
+    # 3 masters and 3 replicas, the minimal recommended cluster config
+    command: >
+      localhost:1000
+      localhost:1001
+      localhost:1002
+      localhost:1003
+      localhost:1004
+      localhost:1005
+    network_mode: 'host'
+  'redis-cache-1':
+    container_name: 'redis-cache-1'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=1000'
+    volumes:
+      - type: 'volume'
+        source: 'redis-cache-1'
+        target: '/data'
+    network_mode: 'host'
+  'redis-cache-2':
+    container_name: 'redis-cache-2'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=1001'
+    volumes:
+      - type: 'volume'
+        source: 'redis-cache-2'
+        target: '/data'
+    network_mode: 'host'
+  'redis-cache-3':
+    container_name: 'redis-cache-3'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=1002'
+    volumes:
+      - type: 'volume'
+        source: 'redis-cache-3'
+        target: '/data'
+    network_mode: 'host'
+  'redis-cache-4':
+    container_name: 'redis-cache-4'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=1003'
+    volumes:
+      - type: 'volume'
+        source: 'redis-cache-4'
+        target: '/data'
+    network_mode: 'host'
+  'redis-cache-5':
+    container_name: 'redis-cache-5'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=1004'
+    volumes:
+      - type: 'volume'
+        source: 'redis-cache-5'
+        target: '/data'
+    network_mode: 'host'
+  'redis-cache-6':
+    container_name: 'redis-cache-6'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=1005'
+    volumes:
+      - type: 'volume'
+        source: 'redis-cache-6'
+        target: '/data'
+    network_mode: 'host'
+  'redis-push-scheduler-cluster':
+    container_name: 'redis-push-scheduler-cluster'
+    depends_on:
+      - 'redis-push-scheduler-1'
+      - 'redis-push-scheduler-2'
+      - 'redis-push-scheduler-3'
+      - 'redis-push-scheduler-4'
+      - 'redis-push-scheduler-5'
+      - 'redis-push-scheduler-6'
+    build:
+      context: './docker/redis/'
+      dockerfile: './cluster.dockerfile'
+    # 3 masters and 3 replicas, the minimal recommended cluster config
+    command: >
+      localhost:2000
+      localhost:2001
+      localhost:2002
+      localhost:2003
+      localhost:2004
+      localhost:2005
+    network_mode: 'host'
+  'redis-push-scheduler-1':
+    container_name: 'redis-push-scheduler-1'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=2000'
+    volumes:
+      - type: 'volume'
+        source: 'redis-push-scheduler-1'
+        target: '/data'
+    network_mode: 'host'
+  'redis-push-scheduler-2':
+    container_name: 'redis-push-scheduler-2'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=2001'
+    volumes:
+      - type: 'volume'
+        source: 'redis-push-scheduler-2'
+        target: '/data'
+    network_mode: 'host'
+  'redis-push-scheduler-3':
+    container_name: 'redis-push-scheduler-3'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=2002'
+    volumes:
+      - type: 'volume'
+        source: 'redis-push-scheduler-3'
+        target: '/data'
+    network_mode: 'host'
+  'redis-push-scheduler-4':
+    container_name: 'redis-push-scheduler-4'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=2003'
+    volumes:
+      - type: 'volume'
+        source: 'redis-push-scheduler-4'
+        target: '/data'
+    network_mode: 'host'
+  'redis-push-scheduler-5':
+    container_name: 'redis-push-scheduler-5'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=2004'
+    volumes:
+      - type: 'volume'
+        source: 'redis-push-scheduler-5'
+        target: '/data'
+    network_mode: 'host'
+  'redis-push-scheduler-6':
+    container_name: 'redis-push-scheduler-6'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=2005'
+    volumes:
+      - type: 'volume'
+        source: 'redis-push-scheduler-6'
+        target: '/data'
+    network_mode: 'host'
+  'redis-rate-limiters-cluster':
+    container_name: 'redis-rate-limiters-cluster'
+    depends_on:
+      - 'redis-rate-limiters-1'
+      - 'redis-rate-limiters-2'
+      - 'redis-rate-limiters-3'
+      - 'redis-rate-limiters-4'
+      - 'redis-rate-limiters-5'
+      - 'redis-rate-limiters-6'
+    build:
+      context: './docker/redis/'
+      dockerfile: './cluster.dockerfile'
+    # 3 masters and 3 replicas, the minimal recommended cluster config
+    command: >
+      localhost:3000
+      localhost:3001
+      localhost:3002
+      localhost:3003
+      localhost:3004
+      localhost:3005
+    network_mode: 'host'
+  'redis-rate-limiters-1':
+    container_name: 'redis-rate-limiters-1'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=3000'
+    volumes:
+      - type: 'volume'
+        source: 'redis-rate-limiters-1'
+        target: '/data'
+    network_mode: 'host'
+  'redis-rate-limiters-2':
+    container_name: 'redis-rate-limiters-2'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=3001'
+    volumes:
+      - type: 'volume'
+        source: 'redis-rate-limiters-2'
+        target: '/data'
+    network_mode: 'host'
+  'redis-rate-limiters-3':
+    container_name: 'redis-rate-limiters-3'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=3002'
+    volumes:
+      - type: 'volume'
+        source: 'redis-rate-limiters-3'
+        target: '/data'
+    network_mode: 'host'
+  'redis-rate-limiters-4':
+    container_name: 'redis-rate-limiters-4'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=3003'
+    volumes:
+      - type: 'volume'
+        source: 'redis-rate-limiters-4'
+        target: '/data'
+    network_mode: 'host'
+  'redis-rate-limiters-5':
+    container_name: 'redis-rate-limiters-5'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=3004'
+    volumes:
+      - type: 'volume'
+        source: 'redis-rate-limiters-5'
+        target: '/data'
+    network_mode: 'host'
+  'redis-rate-limiters-6':
+    container_name: 'redis-rate-limiters-6'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=3005'
+    volumes:
+      - type: 'volume'
+        source: 'redis-rate-limiters-6'
+        target: '/data'
+    network_mode: 'host'
+  'redis-message-cache-cluster':
+    container_name: 'redis-message-cache-cluster'
+    depends_on:
+      - 'redis-message-cache-1'
+      - 'redis-message-cache-2'
+      - 'redis-message-cache-3'
+      - 'redis-message-cache-4'
+      - 'redis-message-cache-5'
+      - 'redis-message-cache-6'
+    build:
+      context: './docker/redis/'
+      dockerfile: './cluster.dockerfile'
+    # 3 masters and 3 replicas, the minimal recommended cluster config
+    command: >
+      localhost:4000
+      localhost:4001
+      localhost:4002
+      localhost:4003
+      localhost:4004
+      localhost:4005
+    network_mode: 'host'
+  'redis-message-cache-1':
+    container_name: 'redis-message-cache-1'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=4000'
+    volumes:
+      - type: 'volume'
+        source: 'redis-message-cache-1'
+        target: '/data'
+    network_mode: 'host'
+  'redis-message-cache-2':
+    container_name: 'redis-message-cache-2'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=4001'
+    volumes:
+      - type: 'volume'
+        source: 'redis-message-cache-2'
+        target: '/data'
+    network_mode: 'host'
+  'redis-message-cache-3':
+    container_name: 'redis-message-cache-3'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=4002'
+    volumes:
+      - type: 'volume'
+        source: 'redis-message-cache-3'
+        target: '/data'
+    network_mode: 'host'
+  'redis-message-cache-4':
+    container_name: 'redis-message-cache-4'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=4003'
+    volumes:
+      - type: 'volume'
+        source: 'redis-message-cache-4'
+        target: '/data'
+    network_mode: 'host'
+  'redis-message-cache-5':
+    container_name: 'redis-message-cache-5'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=4004'
+    volumes:
+      - type: 'volume'
+        source: 'redis-message-cache-5'
+        target: '/data'
+    network_mode: 'host'
+  'redis-message-cache-6':
+    container_name: 'redis-message-cache-6'
+    restart: 'always'
+    build:
+      context: './docker/redis/'
+      dockerfile: './node.dockerfile'
+    environment:
+      - 'REDIS_PORT=4005'
+    volumes:
+      - type: 'volume'
+        source: 'redis-message-cache-6'
+        target: '/data'
+    network_mode: 'host'
 volumes:
   'metrics':
+  'redis-cache-1':
+  'redis-cache-2':
+  'redis-cache-3':
+  'redis-cache-4':
+  'redis-cache-5':
+  'redis-cache-6':
+  'redis-push-scheduler-1':
+  'redis-push-scheduler-2':
+  'redis-push-scheduler-3':
+  'redis-push-scheduler-4':
+  'redis-push-scheduler-5':
+  'redis-push-scheduler-6':
+  'redis-rate-limiters-1':
+  'redis-rate-limiters-2':
+  'redis-rate-limiters-3':
+  'redis-rate-limiters-4':
+  'redis-rate-limiters-5':
+  'redis-rate-limiters-6':
+  'redis-message-cache-1':
+  'redis-message-cache-2':
+  'redis-message-cache-3':
+  'redis-message-cache-4':
+  'redis-message-cache-5':
+  'redis-message-cache-6':
 secrets:
   'signal':
     file: './service/config/'
-networks:
-  'signal':
-    driver: 'bridge'
-    enable_ipv4: true
-    enable_ipv6: true
-    ipam:
-      config:
-        - subnet: '10.0.0.0/24' # 10.0.0.X
-          gateway: '10.0.0.1'
+  'test':
+    file: './service/src/test/resources/config/'
