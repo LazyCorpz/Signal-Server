@@ -89,7 +89,7 @@ FROM ${JDK_VERSION} AS run-test-server
 WORKDIR /usr/app/
 COPY --from=build-without-tests [ "/root/.m2/", "/root/.m2/" ]
 COPY --from=build-without-tests [ "/usr/app/", "./" ]
-COPY --from=notices [ "/usr/app/", "./" ]
+COPY --link --from=notices [ "/usr/app/", "./" ]
 
 # Tests require mounted secrets
 # ENTRYPOINT [ "./mvnw", "integration-test", "-Pverify-server-config", "-Ptest-server" ]
@@ -103,7 +103,7 @@ WORKDIR /usr/app/
 COPY --from=build-without-tests [ "/root/.m2/", "/root/.m2/" ]
 COPY --from=build-without-tests [ "/usr/app/", "./" ]
 COPY [ "./docker/signal-server/docker-entrypoint.sh", "./" ]
-COPY --from=notices [ "/usr/app/", "./" ]
+COPY --link --from=notices [ "/usr/app/", "./" ]
 
 # CMD args are passed to both Maven and JVM,
 # which install and run the server, respectively
