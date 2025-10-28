@@ -9,11 +9,7 @@ logging:
 health:
   delayedShutdownHandlerEnabled: false
 
-awsCredentialsProvider:
-  type: static
-  accessKeyId: secret://aws.accessKeyId
-  secretAccessKey: secret://aws.secretAccessKey
-
+# Prometheus metrics reporter configuration
 # Syntax: https://github.com/coursera/metrics-datadog?tab=readme-ov-file#dropwizard-metrics-reporter
 metrics:
   reporters:
@@ -39,6 +35,29 @@ metrics:
         - ^executor\..+$
         - ^lettuce\..+$
   reportOnStop: true
+dogstatsd:
+  type: nowait
+  environment: dev
+  host: 10.0.0.4
+  port: 9125
+
+# Redis configurations
+pubsub: # Client
+  type: local
+cacheCluster:
+  type: default
+  configurationUri: redis://localhost:1000/
+pushSchedulerCluster:
+  type: default
+  configurationUri: redis://localhost:2000/
+rateLimitersCluster:
+  type: default
+  configurationUri: redis://localhost:3000/
+messageCache: # Cluster
+  persistDelayMinutes: 1
+  cluster:
+    type: default
+    configurationUri: redis://localhost:4000/
 
 dogstatsd:
   type: nowait
@@ -48,6 +67,11 @@ dogstatsd:
 
 tlsKeyStore:
   password: secret://tlsKeyStore.password
+
+awsCredentialsProvider:
+  type: static
+  accessKeyId: secret://aws.accessKeyId
+  secretAccessKey: secret://aws.secretAccessKey
 
 stripe:
   apiKey: secret://stripe.apiKey
@@ -178,18 +202,6 @@ dynamoDbTables:
   verificationSessions:
     tableName: verification_sessions_test
 
-cacheCluster: # Redis server configuration for cache cluster
-  type: local
-
-pubsub: # Redis server configuration for pubsub cluster
-  type: local
-
-pushSchedulerCluster: # Redis server configuration for push scheduler cluster
-  type: local
-
-rateLimitersCluster: # Redis server configuration for rate limiters cluster
-  type: local
-
 directoryV2:
   client: # Configuration for interfacing with Contact Discovery Service v2 cluster
     userAuthenticationTokenSharedSecret: secret://directoryV2.client.userAuthenticationTokenSharedSecret
@@ -223,11 +235,6 @@ svr2:
       O/esB2Eaf+QqMPELdFSZQfG2jvp+3WQTZK8fDKHyLr076G3UetEMy867F6fzTSZd
       9Kxq0DY7RCEpdHMCKcOL
       -----END CERTIFICATE-----
-
-messageCache: # Redis server configuration for message store cache
-  persistDelayMinutes: 1
-  cluster:
-    type: local
 
 gcpAttachments: # GCP Storage configuration
   domain: example.com
