@@ -314,7 +314,7 @@ public class ProfileController {
 
           final int targetBatchCount = 10;
           // clamp the amount per batch to be in the closed range [30, 100]
-          final int batchSize = Math.min(Math.max(request.elements().size() / targetBatchCount, 30), 100);
+          final int batchSize = Math.clamp(request.elements().size() / targetBatchCount, 30, 100);
           // add 1 extra batch if there is any remainder to consume the final non-full batch
           final int batchCount =
               request.elements().size() / batchSize + (request.elements().size() % batchSize != 0 ? 1 : 0);

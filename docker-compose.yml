@@ -1,64 +1,86 @@
 # We use the reserved private subnet 10.0.0.0/8 (::ffff:a00:0/104)
 # https://en.wikipedia.org/wiki/Reserved_IP_addresses
 services:
-  'signal-server-prod':
-    container_name: 'signal-server' # Run only testing or prod, never both
-    profiles:
-      - 'prod'
+  'signal':
+    container_name: 'server'
+    depends_on:
+      - 'metrics-adapter'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'run'
-    command: '-Dsecrets.bundle.filename=config/production-secrets-bundle.yml'
+    ports:
+      - ':8080' # Application
+      - ':8081' # Admin
     environment:
-      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
-      - 'SIGNAL_SERVER_CONFIG=config/production.yml'
+      - 'SIGNAL_SERVER_CONFIG=config/test.yml'
     secrets:
-      - source: 'signal-server-production-config'
-        target: '/usr/app/service/config/production.yml'
-      - source: 'signal-server-production-bundle'
-        target: '/usr/app/config/production-secrets-bundle.yml'
+      - source: 'signal'
+        target: '/usr/app/service/config/'
+    sysctls:
+      - 'net.ipv6.conf.all.disable_ipv6=0'
     networks:
-      'signal-server':
-  'signal-server-prod-testing':
-    container_name: 'signal-server' # Run only testing or prod, never both
+      'signal':
+        ipv4_address: '10.0.0.2'
+  'test-server':
+    container_name: 'test-server'
     profiles:
-      - 'prod'
-      - 'test'
+      - 'staging'
+    depends_on:
+      - 'metrics-adapter'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
-      target: 'integration-tests'
-    command: '-Dsecrets.bundle.filename=config/production-secrets-bundle.yml'
-    environment:
-      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
-      - 'SIGNAL_SERVER_CONFIG=config/production.yml'
+      target: 'run-test-server'
     secrets:
-      - source: 'signal-server-production-config'
-        target: '/usr/app/service/config/production.yml'
-      - source: 'signal-server-production-bundle'
-        target: '/usr/app/config/production-secrets-bundle.yml'
+      - source: 'signal'
+        target: '/usr/app/service/config/'
     networks:
-      'signal-server':
-  'signal-server-dev-testing':
+      'signal':
+        ipv4_address: '10.0.0.253'
+  'tests':
+    container_name: 'tests'
     profiles:
       - 'dev'
-      - 'test'
     build:
       context: '.'
       dockerfile: './docker/signal-server/Dockerfile'
       target: 'integration-tests'
-    environment:
-      - 'REDIS_SERVER_ADDRESS=127.0.0.1'
     networks:
-      'signal-server':
+      'signal':
+        ipv4_address: '10.0.0.254'
+  'metrics':
+    container_name: 'metrics'
+    image: 'prom/prometheus:v3.5.0'
+    ports:
+      - ':9090'
+    volumes:
+      - type: 'bind'
+        source: './docker/metrics/'
+        target: '/etc/prometheus/'
+      - type: 'volume'
+        source: 'metrics'
+        target: '/prometheus'
+    networks:
+      'signal':
+        ipv4_address: '10.0.0.3'
+  'metrics-adapter':
+    container_name: 'metrics-adapter'
+    image: 'prom/statsd-exporter:v0.28.0'
+    depends_on:
+      'metrics':
+        required: false
+        condition: 'service_started'
+    networks:
+      'signal':
+        ipv4_address: '10.0.0.4'
+volumes:
+  'metrics':
 secrets:
-  'signal-server-production-config':
-    file: './service/config/production.yml'
-  'signal-server-production-bundle':
-    file: './config/production-secrets-bundle.yml'
+  'signal':
+    file: './service/config/'
 networks:
-  'signal-server':
+  'signal':
     driver: 'bridge'
     enable_ipv4: true
     enable_ipv6: true

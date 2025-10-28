@@ -3,8 +3,6 @@
 # `unset` values will need to be set to work properly.
 # Most other values are technically valid for a local/demonstration environment, but are probably not production-ready.
 
-# ***** Everything below this line is currently untested: use at own risk! *****
-
 logging:
   level: INFO
   appenders:

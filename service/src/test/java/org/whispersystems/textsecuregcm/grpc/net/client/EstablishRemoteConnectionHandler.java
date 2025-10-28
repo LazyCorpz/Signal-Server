@@ -1,5 +1,12 @@
 package org.whispersystems.textsecuregcm.grpc.net.client;
 
+import java.net.SocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.whispersystems.textsecuregcm.grpc.net.NoiseTunnelProtos;
+import org.whispersystems.textsecuregcm.grpc.net.ProxyHandler;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -10,12 +17,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.ReferenceCountUtil;
-import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import org.whispersystems.textsecuregcm.grpc.net.NoiseTunnelProtos;
-import org.whispersystems.textsecuregcm.grpc.net.ProxyHandler;
 
 /**
  * Handler that takes plaintext inbound messages from a gRPC client and forwards them over the noise tunnel to a remote

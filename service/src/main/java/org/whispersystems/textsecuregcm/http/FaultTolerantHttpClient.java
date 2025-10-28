@@ -63,7 +63,7 @@ public class FaultTolerantHttpClient {
       if (this.retryExecutor == null) {
         throw new IllegalArgumentException("retryExecutor must be specified with retryConfiguration");
       }
-      final RetryConfig.Builder<HttpResponse> retryConfig = retryConfiguration.<HttpResponse>toRetryConfigBuilder()
+      final RetryConfig.Builder<HttpResponse<?>> retryConfig = retryConfiguration.<HttpResponse<?>>toRetryConfigBuilder()
           .retryOnResult(o -> o.statusCode() >= 500);
       if (retryOnException != null) {
         retryConfig.retryOnException(retryOnException);

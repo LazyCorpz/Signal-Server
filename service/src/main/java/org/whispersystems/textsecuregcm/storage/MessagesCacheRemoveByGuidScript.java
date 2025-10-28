@@ -39,7 +39,12 @@ class MessagesCacheRemoveByGuidScript {
 
     //noinspection unchecked
     return removeByGuidScript.executeBinaryAsync(keys, args)
-        .thenApply(result -> (List<byte[]>) result);
+        .thenApply(result -> {
+          @SuppressWarnings("unchecked")
+          List<byte[]> out = (List<byte[]>) result;
+          
+          return out;
+        });
   }
 
 }

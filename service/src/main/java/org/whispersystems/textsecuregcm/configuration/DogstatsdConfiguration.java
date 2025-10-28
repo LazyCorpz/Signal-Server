@@ -27,6 +27,10 @@ public class DogstatsdConfiguration implements DatadogConfiguration {
   @NotBlank
   private String host;
 
+  @JsonProperty
+  @NotNull
+  private int port;
+
   @Override
   public Duration step() {
     return step;
@@ -51,6 +55,11 @@ public class DogstatsdConfiguration implements DatadogConfiguration {
   @Override
   public String host() {
     return host;
+  }
+
+  @Override
+  public int port() {
+    return port;
   }
 
   @Override

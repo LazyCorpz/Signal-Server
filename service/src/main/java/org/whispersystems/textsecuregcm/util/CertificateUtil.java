@@ -16,6 +16,10 @@ import java.security.cert.X509Certificate;
 
 public class CertificateUtil {
 
+  private CertificateUtil() {
+    // Utility class
+  }
+
   public static KeyStore buildKeyStoreForPem(final String... caCertificatePems) throws CertificateException {
     try {
       final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());

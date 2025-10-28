@@ -208,7 +208,7 @@ public class BackupsDb {
   private static ECPublicKey deserializeStoredPublicKey(final byte[] publicKeyBytes) {
     try {
       return new ECPublicKey(publicKeyBytes);
-    } catch (InvalidKeyException e) {
+    } catch (InvalidKeyException e) { // NOSONAR java:S2139 Exception is logged
       logger.error("Invalid publicKey {}", HexFormat.of().formatHex(publicKeyBytes), e);
       throw Status.INTERNAL
           .withCause(e)

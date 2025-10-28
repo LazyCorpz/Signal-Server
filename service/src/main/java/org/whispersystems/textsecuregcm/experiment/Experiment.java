@@ -120,8 +120,8 @@ public class Experiment {
 
   @VisibleForTesting
   <T> void recordResult(final T expected, final T actual, final Timer.Sample sample) {
-    if (expected instanceof Optional && actual instanceof Optional) {
-      recordResult(((Optional) expected).orElse(null), ((Optional) actual).orElse(null), sample);
+    if (expected instanceof Optional<?> opExpected && actual instanceof Optional<?> opActual) {
+      recordResult(opExpected.orElse(null), opActual.orElse(null), sample);
     } else {
       final Timer timer;
 

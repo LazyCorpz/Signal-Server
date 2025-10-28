@@ -8,6 +8,16 @@ Looking for protocol documentation? Check out the website!
 
 <https://signal.org/docs/>
 
+Configuring
+-----------
+
+- Rename [`sample.yml`](./service/config/sample.yml) to `config.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
+- Rename [`sample-secrets-bundle.yml`](./service/config/sample-secrets-bundle.yml) to `secrets-bundle.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
+- Rename [`sample.yml`](./integration-tests/src/main/resources/sample.yml) to `config.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
+
 How to Build
 ------------
 

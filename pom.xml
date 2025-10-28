@@ -63,6 +63,7 @@
     <logstash.logback.version>7.3</logstash.logback.version>
     <log4j-bom.version>2.24.3</log4j-bom.version>
     <luajava.version>3.5.0</luajava.version>
+    <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
     <micrometer.version>1.14.5</micrometer.version>
     <netty.version>4.1.119.Final</netty.version>
     <!-- Must be less than or equal to the value from Google libraries-bom which controls the protobuf runtime version.
@@ -90,6 +91,7 @@
 
   <dependencyManagement>
     <dependencies>
+
       <dependency>
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
@@ -311,10 +313,12 @@
         <artifactId>logback-access-common</artifactId>
         <version>${logback-access.version}</version>
       </dependency>
+
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
+
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
@@ -388,6 +392,8 @@
     </extensions>
     <pluginManagement>
       <plugins>
+
+        <!-- Signal Server -->
         <plugin>
           <groupId>com.google.cloud.tools</groupId>
           <artifactId>jib-maven-plugin</artifactId>
@@ -411,7 +417,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>${maven-shade-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
