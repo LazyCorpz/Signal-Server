@@ -2,6 +2,9 @@
 #
 # `unset` values will need to be set to work properly.
 # Most other values are technically valid for a local/demonstration environment, but are probably not production-ready.
+#
+# For the date, time and duration format used, see:
+# https://en.wikipedia.org/wiki/ISO_8601#Durations
 
 logging:
   level: INFO
@@ -98,7 +101,7 @@ appleDeviceCheck:
   bundleId: bundle.name
 
 deviceCheck:
-  backupRedemptionDuration: P30D
+  backupRedemptionDuration: P30D # ISO 8601
   backupRedemptionLevel: 201
 
 dynamoDbClient:
@@ -125,7 +128,7 @@ dynamoDbTables:
     tableName: Example_DeletedAccountsLock
   issuedReceipts:
     tableName: Example_IssuedReceipts
-    expiration: P30D # Duration of time until rows expire
+    expiration: P30D # Duration of time until rows expire, ISO 8601
     generator: abcdefg12345678= # random base64-encoded binary sequence
     maxIssuedReceiptsPerPaymentId:
       STRIPE: 1
@@ -142,10 +145,10 @@ dynamoDbTables:
     tableName: Example_PQ_Last_Resort_Keys
   messages:
     tableName: Example_Messages
-    expiration: P30D # Duration of time until rows expire
+    expiration: P30D # Duration of time until rows expire, ISO 8601
   onetimeDonations:
     tableName: Example_OnetimeDonations
-    expiration: P90D
+    expiration: P90D # ISO 8601
   phoneNumberIdentifiers:
     tableName: Example_PhoneNumberIdentifiers
   profiles:
@@ -156,17 +159,17 @@ dynamoDbTables:
     tableName: Example_PushNotificationExperimentSamples
   redeemedReceipts:
     tableName: Example_RedeemedReceipts
-    expiration: P30D # Duration of time until rows expire
+    expiration: P30D # Duration of time until rows expire, ISO 8601
   registrationRecovery:
     tableName: Example_RegistrationRecovery
-    expiration: P300D # Duration of time until rows expire
+    expiration: P300D # Duration of time until rows expire, ISO 8601
   remoteConfig:
     tableName: Example_RemoteConfig
   reportMessage:
     tableName: Example_ReportMessage
   scheduledJobs:
     tableName: Example_ScheduledJobs
-    expiration: P7D
+    expiration: P7D # ISO 8601
   subscriptions:
     tableName: Example_Subscriptions
   clientPublicKeys:
@@ -246,11 +249,11 @@ fcm: # FCM configuration
   credentials: secret://fcm.credentials
 
 cdn:
-  bucket: cdn        # S3 Bucket name
+  bucket: cdn # S3 Bucket name
   credentials:
     accessKeyId: secret://cdn.accessKey
     secretAccessKey: secret://cdn.accessSecret
-  region: us-west-2  # AWS region
+  region: us-west-2 # AWS region
 
 cdn3StorageManager:
   baseUri: https://storage-manager.example.com
@@ -314,7 +317,7 @@ dynamicConfig:
   s3Bucket: a-bucket
   objectKey: dynamic-config.yaml
   maxSize: 100000
-  refreshInterval: PT10S
+  refreshInterval: PT10S # ISO 8601
 
 remoteConfig:
   globalConfig: # keys and values that are given to clients on GET /v1/config
@@ -352,11 +355,11 @@ badges:
     '1': TEST
 
 subscription: # configuration for Stripe subscriptions
-  badgeExpiration: P30D
-  badgeGracePeriod: P15D
-  backupExpiration: P30D
-  backupGracePeriod: P15D
-  backupFreeTierMediaDuration: P30D
+  badgeExpiration: P30D # ISO 8601
+  badgeGracePeriod: P15D # ISO 8601
+  backupExpiration: P30D # ISO 8601
+  backupGracePeriod: P15D # ISO 8601
+  backupFreeTierMediaDuration: P30D # ISO 8601
   levels:
     500:
       badge: EXAMPLE
@@ -372,11 +375,11 @@ oneTimeDonations:
   sepaMaximumEuros: '10000'
   boost:
     level: 1
-    expiration: P90D
+    expiration: P90D # ISO 8601
     badge: EXAMPLE
   gift:
     level: 10
-    expiration: P90D
+    expiration: P90D # ISO 8601
     badge: EXAMPLE
   currencies:
     # ISO 4217 currency codes and amounts in those currencies
@@ -507,4 +510,4 @@ externalRequestFilter:
     - 127.0.0.0/8
 
 idlePrimaryDeviceReminder:
-  minIdleDuration: P30D
+  minIdleDuration: P30D # ISO 8601

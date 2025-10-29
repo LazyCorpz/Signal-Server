@@ -6,7 +6,7 @@ run.sh
 *~
 local.yml
 /config
-/service/config
+/service/config/**
 !/service/config/sample-secrets-bundle.yml
 !/service/config/sample.yml
 /service/dependency-reduced-pom.xml
