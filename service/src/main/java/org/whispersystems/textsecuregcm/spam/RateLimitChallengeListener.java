@@ -7,7 +7,6 @@ package org.whispersystems.textsecuregcm.spam;
 
 
 import org.whispersystems.textsecuregcm.storage.Account;
-import java.io.IOException;
 
 public interface RateLimitChallengeListener {
 

@@ -8,18 +8,14 @@ package org.whispersystems.textsecuregcm.backup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.stream.Stream;
-import org.assertj.core.util.Streams;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -35,6 +31,9 @@ import org.whispersystems.textsecuregcm.storage.DynamoDbExtensionSchema;
 import org.whispersystems.textsecuregcm.util.CompletableFutureTestUtil;
 import org.whispersystems.textsecuregcm.util.TestClock;
 import org.whispersystems.textsecuregcm.util.TestRandomUtil;
+
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import reactor.core.scheduler.Schedulers;
 
 public class BackupsDbTest {

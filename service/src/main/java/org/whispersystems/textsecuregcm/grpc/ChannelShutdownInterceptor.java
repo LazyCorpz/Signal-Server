@@ -5,16 +5,14 @@
 
 package org.whispersystems.textsecuregcm.grpc;
 
-import io.grpc.Context;
+import org.whispersystems.textsecuregcm.grpc.net.GrpcClientConnectionManager;
+
 import io.grpc.ForwardingServerCallListener;
-import io.grpc.Grpc;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
-import io.netty.channel.local.LocalAddress;
-import org.whispersystems.textsecuregcm.grpc.net.GrpcClientConnectionManager;
 
 /**
  * Then channel shutdown interceptor rejects new requests if a channel is shutting down and works in tandem with

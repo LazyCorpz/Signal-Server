@@ -5,9 +5,6 @@
 
 package org.whispersystems.textsecuregcm.auth;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-import io.dropwizard.lifecycle.Managed;
-import io.lettuce.core.pubsub.RedisPubSubAdapter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,9 +13,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
+
 import javax.annotation.Nullable;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.textsecuregcm.metrics.MetricsUtil;
@@ -26,6 +23,13 @@ import org.whispersystems.textsecuregcm.redis.FaultTolerantPubSubConnection;
 import org.whispersystems.textsecuregcm.redis.FaultTolerantRedisClient;
 import org.whispersystems.textsecuregcm.storage.Device;
 import org.whispersystems.textsecuregcm.util.UUIDUtil;
+
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import io.dropwizard.lifecycle.Managed;
+import io.lettuce.core.pubsub.RedisPubSubAdapter;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 
 /**
  * A disconnection request manager broadcasts and dispatches requests for servers to close authenticated connections
@@ -64,8 +68,10 @@ public class DisconnectionRequestManager extends RedisPubSubAdapter<byte[], byte
 
   @Override
   public synchronized void start() {
-    this.pubSubConnection = pubSubClient.createBinaryPubSubConnection();
-    this.pubSubConnection.usePubSubConnection(connection -> {
+    FaultTolerantPubSubConnection<byte[], byte[]> tmpPubSubConnection = pubSubClient.createBinaryPubSubConnection();
+    this.pubSubConnection = tmpPubSubConnection;
+
+    tmpPubSubConnection.usePubSubConnection(connection -> {
       connection.addListener(this);
       connection.sync().subscribe(DISCONNECTION_REQUEST_CHANNEL);
     });

@@ -18,13 +18,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import io.lettuce.core.RedisException;
-import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
-import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -36,6 +34,10 @@ import org.whispersystems.textsecuregcm.tests.util.MockRedisFuture;
 import org.whispersystems.textsecuregcm.tests.util.ProfileTestHelper;
 import org.whispersystems.textsecuregcm.tests.util.RedisClusterHelper;
 import org.whispersystems.textsecuregcm.util.TestRandomUtil;
+
+import io.lettuce.core.RedisException;
+import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
+import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 

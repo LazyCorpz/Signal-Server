@@ -32,6 +32,10 @@ public class MetricsUtil {
 
   private static volatile boolean registeredMetrics = false;
 
+  private MetricsUtil() {
+    // Utility class
+  }
+
   /**
    * Returns a dot-separated ('.') name for the given class and name parts
    */

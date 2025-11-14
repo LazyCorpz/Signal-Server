@@ -4,8 +4,6 @@
  */
 package org.whispersystems.textsecuregcm.configuration;
 
-import java.time.Duration;
-
 /**
  * Configuration for Apple DeviceCheck
  *

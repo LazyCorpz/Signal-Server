@@ -5,7 +5,6 @@
 package org.whispersystems.websocket.auth;
 
 import java.security.Principal;
-import java.util.Optional;
 import org.eclipse.jetty.websocket.api.UpgradeRequest;
 import org.whispersystems.websocket.ReusableAuth;
 

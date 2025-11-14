@@ -5,10 +5,12 @@
 
 package org.whispersystems.textsecuregcm.captcha;
 
-import com.google.api.Http;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import javax.net.ssl.SSLSession;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,11 +19,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import javax.net.ssl.SSLSession;
+
+import org.junit.jupiter.api.Test;
 
 public class ShortCodeExpanderTest {
 

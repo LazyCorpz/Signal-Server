@@ -5,14 +5,16 @@
 
 package org.whispersystems.textsecuregcm.mappers;
 
+import java.util.Optional;
+import java.util.concurrent.CompletionException;
+
+import org.glassfish.jersey.spi.ExceptionMappers;
+
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import java.util.Optional;
-import java.util.concurrent.CompletionException;
-import org.glassfish.jersey.spi.ExceptionMappers;
 
 @Provider
 public class CompletionExceptionMapper implements ExceptionMapper<CompletionException> {
@@ -26,7 +28,7 @@ public class CompletionExceptionMapper implements ExceptionMapper<CompletionExce
 
     if (cause != null) {
 
-      final ExceptionMapper exceptionMapper = exceptionMappers.findMapping(cause);
+      final ExceptionMapper<Throwable> exceptionMapper = exceptionMappers.findMapping(cause);
 
       // some exception mappers, like LoggingExceptionMapper, have side effects (e.g., logging)
       // so we always build their response…

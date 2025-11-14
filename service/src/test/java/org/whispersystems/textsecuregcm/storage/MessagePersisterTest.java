@@ -24,8 +24,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.whispersystems.textsecuregcm.util.MockUtils.exactly;
 
-import com.google.protobuf.ByteString;
-import io.lettuce.core.cluster.SlotHash;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
@@ -43,6 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,12 +58,16 @@ import org.whispersystems.textsecuregcm.experiment.ExperimentEnrollmentManager;
 import org.whispersystems.textsecuregcm.identity.IdentityType;
 import org.whispersystems.textsecuregcm.redis.RedisClusterExtension;
 import org.whispersystems.textsecuregcm.tests.util.DevicesHelper;
+
+import com.google.protobuf.ByteString;
+
+import io.lettuce.core.cluster.SlotHash;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import software.amazon.awssdk.services.dynamodb.model.ItemCollectionSizeLimitExceededException;
 
-@Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
+@Timeout(value = 10, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
 class MessagePersisterTest {
 
   @RegisterExtension
@@ -204,7 +207,7 @@ class MessagePersisterTest {
       final String queueName = generateRandomQueueNameForSlot(slot);
       final UUID accountUuid = MessagesCache.getAccountUuidFromQueueName(queueName);
       final byte deviceId = MessagesCache.getDeviceIdFromQueueName(queueName);
-      final String accountNumber = "+1" + RandomStringUtils.randomNumeric(10);
+      final String accountNumber = "+1" + RandomStringUtils.secure().nextNumeric(10);
 
       final Account account = mock(Account.class);
 

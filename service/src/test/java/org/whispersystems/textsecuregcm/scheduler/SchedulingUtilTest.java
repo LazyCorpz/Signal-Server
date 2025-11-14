@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.i18n.phonenumbers.PhoneNumberToTimeZonesMapper;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -13,14 +11,14 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import com.google.i18n.phonenumbers.Phonenumber;
+
 import org.junit.jupiter.api.Test;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.Device;
 import org.whispersystems.textsecuregcm.util.TestClock;
+
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 class SchedulingUtilTest {
 

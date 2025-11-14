@@ -5,19 +5,18 @@
 
 package org.whispersystems.textsecuregcm.workers;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import io.dropwizard.core.Application;
-import io.dropwizard.core.cli.EnvironmentCommand;
-import io.dropwizard.core.setup.Environment;
-
 import java.util.List;
 import java.util.UUID;
-import net.sourceforge.argparse4j.impl.Arguments;
-import net.sourceforge.argparse4j.inf.Namespace;
-import net.sourceforge.argparse4j.inf.Subparser;
+
 import org.whispersystems.textsecuregcm.WhisperServerConfiguration;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.Device;
+
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Environment;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
 
 public class UnlinkDeviceCommand extends AbstractCommandWithDependencies {
 

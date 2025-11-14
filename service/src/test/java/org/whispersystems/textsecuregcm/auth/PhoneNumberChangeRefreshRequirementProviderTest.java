@@ -6,7 +6,6 @@
 package org.whispersystems.textsecuregcm.auth;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.timeout;
@@ -15,20 +14,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.whispersystems.textsecuregcm.filters.RemoteAddressFilter.REMOTE_ADDRESS_ATTRIBUTE_NAME;
 
-import com.google.common.net.HttpHeaders;
-import io.dropwizard.auth.Auth;
-import io.dropwizard.auth.AuthDynamicFeature;
-import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
-import io.dropwizard.core.Application;
-import io.dropwizard.core.Configuration;
-import io.dropwizard.core.setup.Environment;
-import io.dropwizard.testing.junit5.DropwizardAppExtension;
-import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.ServletRegistration;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.client.Invocation;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
@@ -36,6 +21,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
@@ -59,6 +45,22 @@ import org.whispersystems.websocket.auth.PrincipalSupplier;
 import org.whispersystems.websocket.auth.ReadOnly;
 import org.whispersystems.websocket.configuration.WebSocketConfiguration;
 import org.whispersystems.websocket.setup.WebSocketEnvironment;
+
+import com.google.common.net.HttpHeaders;
+
+import io.dropwizard.auth.Auth;
+import io.dropwizard.auth.AuthDynamicFeature;
+import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
+import io.dropwizard.core.Application;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ServletRegistration;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Invocation;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 class PhoneNumberChangeRefreshRequirementProviderTest {
@@ -198,7 +200,7 @@ class PhoneNumberChangeRefreshRequirementProviderTest {
     makeAuthenticatedRequest(protocol, "/test/annotated");
 
     // Event listeners can fire after responses are sent
-    verify(ACCOUNTS_MANAGER, timeout(5000).times(1)).getByAccountIdentifier(eq(account1.getUuid()));
+    verify(ACCOUNTS_MANAGER, timeout(5000).times(1)).getByAccountIdentifier(account1.getUuid());
     verifyNoMoreInteractions(ACCOUNTS_MANAGER);
   }
 

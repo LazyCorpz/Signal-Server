@@ -5,7 +5,6 @@
 
 package org.whispersystems.textsecuregcm.backup;
 
-import io.grpc.Status;
 import java.security.MessageDigest;
 import java.time.Clock;
 import java.time.Duration;
@@ -16,7 +15,9 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
+
 import javax.annotation.Nullable;
+
 import org.signal.libsignal.zkgroup.GenericServerSecretParams;
 import org.signal.libsignal.zkgroup.InvalidInputException;
 import org.signal.libsignal.zkgroup.VerificationFailedException;
@@ -33,9 +34,12 @@ import org.whispersystems.textsecuregcm.controllers.RateLimitExceededException;
 import org.whispersystems.textsecuregcm.experiment.ExperimentEnrollmentManager;
 import org.whispersystems.textsecuregcm.limits.RateLimiters;
 import org.whispersystems.textsecuregcm.storage.Account;
+import org.whispersystems.textsecuregcm.storage.Account.BackupVoucher;
 import org.whispersystems.textsecuregcm.storage.AccountsManager;
 import org.whispersystems.textsecuregcm.storage.RedeemedReceiptsManager;
 import org.whispersystems.textsecuregcm.util.Util;
+
+import io.grpc.Status;
 
 /**
  * Issues ZK backup auth credentials for authenticated accounts
@@ -52,9 +56,9 @@ public class BackupAuthManager {
   private static final Logger logger = LoggerFactory.getLogger(BackupAuthManager.class);
 
 
-  final static Duration MAX_REDEMPTION_DURATION = Duration.ofDays(7);
-  final static String BACKUP_EXPERIMENT_NAME = "backup";
-  final static String BACKUP_MEDIA_EXPERIMENT_NAME = "backupMedia";
+  static final Duration MAX_REDEMPTION_DURATION = Duration.ofDays(7);
+  static final String BACKUP_EXPERIMENT_NAME = "backup";
+  static final String BACKUP_MEDIA_EXPERIMENT_NAME = "backupMedia";
 
   private final ExperimentEnrollmentManager experimentEnrollmentManager;
   private final GenericServerSecretParams serverSecretParams;
@@ -245,7 +249,7 @@ public class BackupAuthManager {
     return redeemedReceiptsManager
         .put(receiptSerial, receiptExpiration.getEpochSecond(), receiptLevel, account.getUuid())
         .thenCompose(receiptAllowed -> {
-          if (!receiptAllowed) {
+          if (!((boolean) receiptAllowed)) {
             throw Status.INVALID_ARGUMENT
                 .withDescription("receipt serial is already redeemed")
                 .asRuntimeException();
@@ -296,7 +300,9 @@ public class BackupAuthManager {
   }
 
   private boolean hasActiveVoucher(final Account account) {
-    return account.getBackupVoucher() != null && clock.instant().isBefore(account.getBackupVoucher().expiration());
+    BackupVoucher backupVoucher = account.getBackupVoucher();
+    
+    return backupVoucher != null && clock.instant().isBefore(backupVoucher.expiration());
   }
 
   private boolean hasExpiredVoucher(final Account account) {

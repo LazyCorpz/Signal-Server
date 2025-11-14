@@ -8,11 +8,12 @@ package org.whispersystems.textsecuregcm.storage;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.whispersystems.textsecuregcm.entities.SignedPreKey;
+
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.TransactWriteItemsRequest;
 

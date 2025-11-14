@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -170,9 +171,9 @@ public class ConfiguredProfileBadgeConverterTest {
             new HeaderControlledResourceBundleLookup(resourceBundleFactory));
 
     Locale defaultLocale = Locale.getDefault();
-    Locale enGb = new Locale("en", "GB");
-    Locale en = new Locale("en");
-    Locale esUs = new Locale("es", "US");
+    Locale enGb = Locale.of("en", "GB");
+    Locale en = Locale.of("en");
+    Locale esUs = Locale.of("es", "US");
 
     ArgumentCaptor<Control> controlArgumentCaptor = setupResourceBundle(enGb);
     badgeConverter.convert(List.of(enGb, en, esUs),
@@ -189,7 +190,7 @@ public class ConfiguredProfileBadgeConverterTest {
 
     try {
       // temporarily override for purpose of ensuring this test doesn't change based on system default locale
-      Locale.setDefault(new Locale("xx", "XX"));
+      Locale.setDefault(new Locale.Builder().setLanguage("xx").setRegion("XX").build());
 
       assertThat(control.getFallbackLocale(ConfiguredProfileBadgeConverter.BASE_NAME, enGb)).isEqualTo(en);
       assertThat(control.getFallbackLocale(ConfiguredProfileBadgeConverter.BASE_NAME, en)).isEqualTo(esUs);

@@ -5,17 +5,18 @@
 
 package org.whispersystems.textsecuregcm.workers;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
+
 import org.apache.commons.lang3.StringUtils;
 import org.whispersystems.textsecuregcm.identity.IdentityType;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.Device;
 import org.whispersystems.textsecuregcm.storage.MessagesManager;
-import reactor.core.publisher.Mono;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * Checks if a device may benefit from receiving a push notification

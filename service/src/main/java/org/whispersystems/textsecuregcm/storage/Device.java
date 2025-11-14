@@ -5,24 +5,26 @@
 package org.whispersystems.textsecuregcm.storage;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import javax.annotation.Nullable;
-import com.google.common.annotations.VisibleForTesting;
+
 import org.whispersystems.textsecuregcm.auth.SaltedTokenHash;
 import org.whispersystems.textsecuregcm.identity.IdentityType;
 import org.whispersystems.textsecuregcm.util.DeviceCapabilityAdapter;
 import org.whispersystems.textsecuregcm.util.DeviceNameByteArrayAdapter;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.annotations.VisibleForTesting;
 
 public class Device {
 

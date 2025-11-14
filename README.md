@@ -6,19 +6,29 @@ Documentation
 
 Looking for protocol documentation? Check out the website!
 
-https://signal.org/docs/
+<https://signal.org/docs/>
+
+Configuring
+-----------
+
+- Rename [`sample.yml`](./service/config/sample.yml) to `config.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
+- Rename [`sample-secrets-bundle.yml`](./service/config/sample-secrets-bundle.yml) to `secrets-bundle.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
+- Rename [`sample.yml`](./integration-tests/src/main/resources/sample.yml) to `config.yml`.
+  The project will not run with these sample credentials, and therefore need to be properly configured.
 
 How to Build
 ------------
 
-```shell script
-$ ./mvnw clean test
+```shell
+./mvnw clean test
 ```
 
 Security
 --------
 
-Security issues should be sent to <a href=mailto:security@signal.org>security@signal.org</a>.
+Security issues should be sent to <mailto:security@signal.org>.
 
 Help
 ----
@@ -40,6 +50,11 @@ License
 
 Copyright 2013 Signal Messenger, LLC
 
-Licensed under the GNU AGPLv3: https://www.gnu.org/licenses/agpl-3.0.html
+Licensed under the GNU AGPLv3: <https://www.gnu.org/licenses/agpl-3.0.html>
+
+Copyright Notices
+-------
+
+See: [NOTICE.md](./NOTICE.md)
 
 [community forum]: https://community.signalusers.org

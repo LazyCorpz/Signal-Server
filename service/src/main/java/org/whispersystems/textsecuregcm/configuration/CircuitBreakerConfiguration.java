@@ -5,16 +5,18 @@
 
 package org.whispersystems.textsecuregcm.configuration;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.annotations.VisibleForTesting;
-import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.annotations.VisibleForTesting;
+
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class CircuitBreakerConfiguration {
 
@@ -110,9 +112,12 @@ public class CircuitBreakerConfiguration {
   }
 
   public CircuitBreakerConfig toCircuitBreakerConfig() {
+    @SuppressWarnings("unchecked")
+    Class<? extends Throwable>[] clazz = new Class[0];
+    
     return CircuitBreakerConfig.custom()
         .failureRateThreshold(getFailureRateThreshold())
-        .ignoreExceptions(getIgnoredExceptions().toArray(new Class[0]))
+        .ignoreExceptions(getIgnoredExceptions().toArray(clazz))
         .permittedNumberOfCallsInHalfOpenState(getPermittedNumberOfCallsInHalfOpenState())
         .waitDurationInOpenState(getWaitDurationInOpenState())
         .slidingWindow(getSlidingWindowSize(), getSlidingWindowMinimumNumberOfCalls(),

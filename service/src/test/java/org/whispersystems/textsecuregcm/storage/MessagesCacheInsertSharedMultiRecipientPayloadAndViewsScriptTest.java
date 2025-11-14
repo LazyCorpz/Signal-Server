@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.lettuce.core.RedisCommandExecutionException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import io.lettuce.core.RedisException;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +28,8 @@ import org.whispersystems.textsecuregcm.identity.AciServiceIdentifier;
 import org.whispersystems.textsecuregcm.identity.ServiceIdentifier;
 import org.whispersystems.textsecuregcm.redis.RedisClusterExtension;
 import org.whispersystems.textsecuregcm.util.Pair;
+
+import io.lettuce.core.RedisException;
 
 class MessagesCacheInsertSharedMultiRecipientPayloadAndViewsScriptTest {
 

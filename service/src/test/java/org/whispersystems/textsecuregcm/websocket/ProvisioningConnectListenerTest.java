@@ -11,14 +11,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,6 +25,8 @@ import org.whispersystems.textsecuregcm.entities.MessageProtos;
 import org.whispersystems.textsecuregcm.push.ProvisioningManager;
 import org.whispersystems.websocket.WebSocketClient;
 import org.whispersystems.websocket.session.WebSocketSessionContext;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 class ProvisioningConnectListenerTest {
 

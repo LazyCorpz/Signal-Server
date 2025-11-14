@@ -57,7 +57,7 @@ public class RedisServerExtension implements BeforeAllCallback, BeforeEachCallba
   }
 
   public static RedisURI getRedisURI() {
-    return RedisURI.create("redis://127.0.0.1:%d".formatted(redisServer.ports().getFirst()));
+    return RedisClusterExtension.getRedisURI(redisServer);
   }
 
   @Override

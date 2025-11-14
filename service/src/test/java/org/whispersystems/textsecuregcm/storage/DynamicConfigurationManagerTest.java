@@ -2,7 +2,7 @@ package org.whispersystems.textsecuregcm.storage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

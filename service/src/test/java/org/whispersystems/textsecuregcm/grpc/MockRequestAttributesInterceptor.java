@@ -6,17 +6,13 @@
 package org.whispersystems.textsecuregcm.grpc;
 
 import com.google.common.net.InetAddresses;
+
 import io.grpc.Context;
 import io.grpc.Contexts;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
-import java.net.InetAddress;
-import java.util.List;
-import java.util.Locale;
-import javax.annotation.Nullable;
-import org.whispersystems.textsecuregcm.util.ua.UserAgent;
 
 public class MockRequestAttributesInterceptor implements ServerInterceptor {
 

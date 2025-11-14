@@ -47,6 +47,7 @@ public class RegistrationTest {
     final VerificationCodeRequest verificationCodeRequest = new VerificationCodeRequest(
         VerificationCodeRequest.Transport.SMS, "android-ng");
 
+    @SuppressWarnings("unused")
     final VerificationSessionResponse codeRequested = Operations
         .apiPost("/v1/verification/session/%s/code".formatted(sessionId), verificationCodeRequest)
         .executeExpectSuccess(VerificationSessionResponse.class);
@@ -54,6 +55,7 @@ public class RegistrationTest {
     // verify code
     final SubmitVerificationCodeRequest submitVerificationCodeRequest = new SubmitVerificationCodeRequest(
         params.verificationCode());
+    @SuppressWarnings("unused")
     final VerificationSessionResponse codeVerified = Operations
         .apiPut("/v1/verification/session/%s/code".formatted(sessionId), submitVerificationCodeRequest)
         .executeExpectSuccess(VerificationSessionResponse.class);

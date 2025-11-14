@@ -19,30 +19,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.common.net.HttpHeaders;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-import io.dropwizard.auth.AuthValueFactoryProvider;
-import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
-import io.dropwizard.testing.junit5.ResourceExtension;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.client.Invocation;
-import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.Response;
 import java.io.UncheckedIOException;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Stream;
+
 import javax.annotation.Nullable;
+
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,6 +63,22 @@ import org.whispersystems.textsecuregcm.util.MockUtils;
 import org.whispersystems.textsecuregcm.util.SystemMapper;
 import org.whispersystems.textsecuregcm.util.TestRandomUtil;
 import org.whispersystems.textsecuregcm.util.TestRemoteAddressFilterProvider;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.net.HttpHeaders;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import io.dropwizard.auth.AuthValueFactoryProvider;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import io.dropwizard.testing.junit5.ResourceExtension;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Response;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class KeyTransparencyControllerTest {

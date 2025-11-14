@@ -1,27 +1,16 @@
 package org.whispersystems.textsecuregcm;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.data.MapEntry.entry;
 import static org.mockito.Mockito.mock;
 import static org.whispersystems.textsecuregcm.filters.RemoteAddressFilter.REMOTE_ADDRESS_ATTRIBUTE_NAME;
 
-import io.dropwizard.core.Application;
-import io.dropwizard.core.Configuration;
-import io.dropwizard.core.setup.Environment;
-import io.dropwizard.testing.junit5.DropwizardAppExtension;
-import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.ServletRegistration;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URI;
 import java.util.EnumSet;
+
 import org.apache.commons.lang3.RandomStringUtils;
+import org.assertj.core.data.MapEntry;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.glassfish.jersey.server.ManagedAsync;
@@ -40,6 +29,21 @@ import org.whispersystems.websocket.auth.PrincipalSupplier;
 import org.whispersystems.websocket.configuration.WebSocketConfiguration;
 import org.whispersystems.websocket.messages.WebSocketResponseMessage;
 import org.whispersystems.websocket.setup.WebSocketEnvironment;
+
+import io.dropwizard.core.Application;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.ServletRegistration;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class WebsocketResourceProviderIntegrationTest {
@@ -110,8 +114,9 @@ public class WebsocketResourceProviderIntegrationTest {
         URI.create(String.format("ws://127.0.0.1:%d/websocket", DROPWIZARD_APP_EXTENSION.getLocalPort())));
 
     final WebSocketResponseMessage readResponse = testWebsocketListener.doGet("/test/%d".formatted(length)).join();
-    assertThat(readResponse.getHeaders().get(HttpHeaders.CONTENT_LENGTH.toLowerCase()))
-        .isEqualTo(Integer.toString(length));
+    final MapEntry<String, String> expectedEntry = MapEntry.entry(
+        HttpHeaders.CONTENT_LENGTH.toLowerCase(), Integer.toString(length));
+    assertThat(expectedEntry).isIn(readResponse.getHeaders().entrySet());
   }
 
 

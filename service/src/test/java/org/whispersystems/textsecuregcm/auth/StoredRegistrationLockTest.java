@@ -1,19 +1,16 @@
 package org.whispersystems.textsecuregcm.auth;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import javax.swing.text.html.Option;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.whispersystems.textsecuregcm.auth.StoredRegistrationLock.REGISTRATION_LOCK_EXPIRATION_DAYS;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-import static org.whispersystems.textsecuregcm.auth.StoredRegistrationLock.REGISTRATION_LOCK_EXPIRATION_DAYS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class StoredRegistrationLockTest {
   @ParameterizedTest

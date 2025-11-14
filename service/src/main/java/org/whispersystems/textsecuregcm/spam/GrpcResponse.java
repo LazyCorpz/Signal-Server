@@ -5,10 +5,10 @@
 
 package org.whispersystems.textsecuregcm.spam;
 
+import javax.annotation.Nullable;
+
 import io.grpc.Status;
 import io.grpc.StatusException;
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * A combination of a gRPC status and response message to communicate to callers that a message has been flagged as
